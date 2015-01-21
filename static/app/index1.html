@@ -14,7 +14,7 @@
 	<!-- endbower -->
 	<!-- endbuild -->
 	<!-- build:css(.tmp) styles/main.css -->
-	<link rel="stylesheet" href="/static/app/styles/bootstrap.css" />
+	<!--<link rel="stylesheet" href="/static/app/styles/bootstrap.css" />-->
 	<link rel="stylesheet" href="/static/app/styles/main.css">
 	<!-- endbuild -->
 </head>
@@ -36,11 +36,17 @@
 			<div class="col-sm-6 col-md-6" ng-controller="InstantsearchCtrl">
 				<form class="navbar-form" role="search">
 					<div class="input-group col-md-9">
-						<input type="text" class="form-control" placeholder="Search" name="q" ng-model="search">
+						<input type="text" class="form-control" placeholder="Search" name="q" ng-model="search" ng-keyup="searching()" >
 						<div class="input-group-btn">
 							<button class="btn btn-default" type="submit" ng-click="searchSubmit()"><i class="glyphicon glyphicon-search"></i>
 							</button>
 						</div>
+						<ul>
+							<li ng-repeat="x in results">
+						  		{{ x }}
+							</li>
+					  	</ul>
+
 					</div>
 				</form>
 			</div>
@@ -51,6 +57,9 @@
 				</li>
 			</ul>
 			<ul class="nav navbar-nav pull-right" ng-if="isAuthenticated()">
+                <li class="active"><a href="#/">Home</a></li>
+                <li><a href="#/matchme">Match Me</a></li>
+                <li><a href="#/friends">Friends</a></li>
 				<li class="navbar-text" ng-bind="userInfo.userName"></li>
 				<li>
 					<a href="" bs-dropdown="dropdown" style="padding-top: 11px; padding-bottom: 11px;">
@@ -206,6 +215,10 @@
 	<script src="/static/app/scripts/app.js"></script>
 	<script src="/static/app/scripts/controllers/main.js"></script>
 	<script src="/static/app/scripts/controllers/about.js"></script>
+    <script src="/static/app/scripts/controllers/weber_search.js"></script>
+    <script src="/static/app/scripts/controllers/friends.js"></script>
+    <script src="/static/app/scripts/controllers/settings.js"></script>
+	<script src="/static/app/scripts/controllers/weber_search.js"></script>
 	<script src="/static/app/scripts/services/weberservice.js"></script>
 	<script src="/static/app/scripts/controllers/userprofile.js"></script>
 	<script src="/static/app/scripts/controllers/instantsearch.js"></script>

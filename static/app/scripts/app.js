@@ -86,6 +86,18 @@ angular
 				templateUrl: '/static/app/views/login.html',
 				controller: 'LoginCtrl',
 			})
+			.when('/settings', {
+				templateUrl: '/static/app/views/settings.html',
+				controller: 'SettingsCtrl',
+			})
+			.when('/matchme', {
+				templateUrl: '/static/app/views/matchme.html',
+				controller: 'MatchMeCtrl',
+			})
+			.when('/friends', {
+				templateUrl: '/static/app/views/friends.html',
+				controller: 'FriendsCtrl',
+			})
 			.when('/search', {
 				templateUrl: '/static/app/views/about.html',
 				controller: 'AboutCtrl'
@@ -93,10 +105,6 @@ angular
 			.when('/signup', {
 				templateUrl: '/static/app/views/signup.html',
 				controller: 'SignupCtrl'
-			})
-			.when('/forgot_password', {
-				templateUrl: '/static/app/views/forgot_password.html',
-				controller: 'Forgot_passCtrl'
 			})
 			.otherwise({
 				redirectTo: '/'

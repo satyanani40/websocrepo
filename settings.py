@@ -10,6 +10,7 @@ MONGO_DBNAME = 'test'
 
 URL_PREFIX = 'api'
 
+
 TOKEN_SECRET = os.environ.get('SECRET_KEY') or 'JWT Token Secret String'
 
 
