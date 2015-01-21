@@ -3,7 +3,9 @@
         <div class="panel panel-primary" style="margin-bottom:0px;cursor:default;border:none;">
             <div class="panel-heading" style="border:none;">
                 <h5 style="margin-top: 5px;margin-bottom: 5px;" class="text-center">
-                    Your Previous Searches
+                    <img style="width:28px;margin-top: -5px;border: 2px solid; margin-right: 5px;"
+                         class="pull-left img-circle" src="http://api.randomuser.me/portraits/thumb/women/70.jpg" alt="">
+                    your Previous Searches
                     <span class="badge badge-danger pull-right">30</span>
                 </h5>
             </div>
@@ -43,16 +45,7 @@
         </div>
     </div>
     <div class="col-md-7 colpadding" style="min-height:2000px">
-        <form role="form" class="post-to-timeline well colpadding clearfix" style="padding:5px 5px;">
-            <textarea ng-model="new_post"  class="form-control"
-                      style="height: 70px;margin-bottom: 10px;resize:none;"
-                      placeholder="Whats on your mind..."></textarea>
-            <div class="row">
-                <div class="col-sm-offset-4 col-sm-2 pull-right">
-                    <button ng-click="submit_post()"
-                            type="submit" class="btn btn-primary btn-block btn-sm">Post</button></div>
-            </div>
-        </form>
+
         <div class="panel panel-default">
             <div class="panel-heading">
                 <h4>Total <label class="">300</label> people are matched with your search</h4>
