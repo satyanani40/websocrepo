@@ -1,7 +1,20 @@
 <div class="container">
 	<div class="col-md-3 colpadding" wb-affix="150">
 		<div class="thumbnail">
-			<img class="img-rounded" style="width: 100%;" src="{{user.picture.medium}}">
+            <div class="itemsContainer">
+                <div class="image">
+                    <a href="">
+                        <img class="img-rounded" style="width:;" src="{{user.picture.large}}" />
+                    </a>
+                </div>
+                <div class="play">
+                   <span class="btn btn-file btn-block" style="background-color: rgba(0, 0, 0, 0.63) !important;
+                   border-color: rgba(0, 0, 0, 0.63) !important;">
+                       <i class="glyphicon glyphicon-camera" style="font-size:35px;color:#fff;"></i>
+                       <input type="file">
+                   </span>
+                </div>
+            </div>
 			<div class="caption text-center">
 				<h3 style="text-transform: capitalize;">{{user.name.first}} {{user.name.last}}</h3>
 				@{{user.username}}

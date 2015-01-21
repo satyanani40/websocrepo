@@ -11,18 +11,9 @@ angular.module('weberApp')
 	.controller('NavbarCtrl', function($scope, $auth, CurrentUser, $alert, $location) {
 		$scope.currentUser = CurrentUser;
 		$scope.dropdown = [{
-			"text": "Another action",
-			"href": "#anotherAction"
-		}, {
-			"text": "Display an alert",
-			"click": "$alert('Holy guacamole!')"
-		}, {
-			"text": "External link",
-			"href": "/auth/facebook",
-			"target": "_self"
-		}, {
-			"divider": true
-		}, {
+			"text": "Settings",
+			"href": "#/settings"
+		},{
 			"text": "Logout",
 			"click": "logout()"
 		}];
