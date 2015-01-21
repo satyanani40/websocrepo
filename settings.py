@@ -151,9 +151,9 @@ people = {
 }
 
 posts = {
-    'item_title': 'post',
-    #'url': 'people/<regex("[a-f0-9]{24}"):author>/posts',
-    'url' : 'people/posts',
+    'item_title': 'posts',
+    #'url': 'people/posts/<regex("[a-f0-9]{24}"):author>',
+    'url' : 'people/posts/',
 
     'schema': {
 

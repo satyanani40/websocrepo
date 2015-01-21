@@ -10,30 +10,18 @@
 angular.module('weberApp')
   .controller('InstantsearchCtrl', function ($scope, $routeParams, $location, Restangular,$http,$auth) {
 
-   $scope.$watch('search', function() {
-
-   });
-
-   $scope.searching = function(){
-
-   console.log($scope.search)
-   console.log($scope.search.split(" "))
+  $scope.searching = function(){
 
    var params = '{"keywords": {"$in":["'+($scope.search.split(" "))+'"]}}'
    var params2 = '{"author":1}'
-
-   console.log(params)
-
-
-   Restangular.all('people/posts').getList({where :params,embedded :params2}).then(function(data) {
+        Restangular.all('people/posts').getList({where :params,embedded :params2}).then(function(data) {
 						$scope.results = data
+        });
+   };
 
-   });
-};
-
-      $scope.searchSubmit = function(){
-					$location.path("/search").search({q: $scope.search});
-			};
+    $scope.searchSubmit = function(){
+        $location.path("/search").search({q: $scope.search});
+    };
     
-  });
+   });
 

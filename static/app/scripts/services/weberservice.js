@@ -65,7 +65,7 @@ angular.module('weberApp')
 			this.page = 1;
 			this.end = false;
 
-			this.user_obj.all('posts').getList({
+			Restangular.all('people').all('posts').getList({
 				max_results: 10,
 				page: this.page,
 				sort: '[("_created",-1)]'
@@ -87,7 +87,7 @@ angular.module('weberApp')
 				content: content,
 				keywords: similar_keywords
 			}).then(function(data) {
-				this.posts.unshift({
+					this.posts.unshift({
 					author: this.user_obj._id,
 					content: content,
 					_created: "a few seconds ago"
@@ -109,7 +109,7 @@ angular.module('weberApp')
 			if (this.busy | this.end) return;
 			this.busy = true;
 
-			this.user_obj.all('posts').getList({
+			Restangular.all('people').all('posts').getList({
 				max_results: 10,
 				page: this.page,
 				sort: '[("_created",-1)]'
