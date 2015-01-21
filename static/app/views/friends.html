@@ -1,0 +1,46 @@
+<div class="container">
+    <div class="col-sm-offset-2 col-md-7 colpadding" style="min-height:auto">
+        <div class="row">
+           <div class="panel panel-default">
+               <div class="panel-heading">
+                   <h5>
+                       Surya Muppalla Friends&nbsp;
+                           <label class="">
+                               <a href="" style="">
+                                   ({{user.friends.length}})
+                               </a>
+                           </label>
+                       </span>
+                   </h5>
+               </div>
+               <div class="panel-body">
+                   <div ng-repeat="friend in friends" class="row pad-top">
+                       <div class="col-sm-2 colpadding">
+                            <div class="thumbnail">
+                                <a href="#/profile/{{friend._id}}">
+		                            <img data-placement="top-right" data-content="{{friend.location.city}}, {{friend.location.state}}" title="{{friend.name.first}} {{friend.name.last}}" data-trigger="hover" bs-popover src="{{friend.picture.medium}}">
+			                    </a>
+                            </div>
+                       </div>
+                       <div class="col-sm-4 colpadding">
+                           <a href="#/profile/{{friend._id}}">
+                               <h4>{{ friend.username }}</h4>
+                           </a>
+                       </div>
+                       <div class="col-sm-3 colpadding">
+                           <div class="" style="margin-top:40px;">
+                               <div class="row">
+                                   <div class="col-sm-12">
+                                       <a href="" class="btn btn-default btn-sm">
+                                           Cancel Friend
+                                       </a>
+                                   </div>
+                               </div>
+                           </div>
+                       </div>
+                   </div>
+               </div>
+           </div>
+        </div>
+    </div>
+</div>
