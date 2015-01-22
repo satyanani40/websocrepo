@@ -23,7 +23,8 @@ angular.module('weberApp')
 						$scope.friends = friends;
 					});
 				}
-				$scope.submit_post = function() {
+				$scope.function = function() {
+				    alert(hai)
 					$scope.infinitePosts.addPost($scope.new_post);
 					$scope.new_post = '';
 				};
