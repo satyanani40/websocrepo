@@ -31,7 +31,7 @@ ITEM_METHODS = ['GET', 'PATCH', 'DELETE']
 # API. We can always override these global settings later.
 CACHE_CONTROL = 'max-age=20'
 CACHE_EXPIRES = 20
-
+MONGO_QUERY_BLACKLIST = ['$where']
 # Our API will expose two resources (MongoDB collections): 'people' and
 # 'works'. In order to allow for proper data validation, we define beaviour
 # and structure.

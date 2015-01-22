@@ -26,11 +26,19 @@ angular.module('weberApp')
 
 
         $scope.searching = function(){
-			var params = '{"keywords": {"$in":["'+($scope.search.split(" "))+'"]}}';
-   			var params2 = '{"author":1}';
+
+        	function combine_ids(ids) {
+   				return (ids.length ? "\"" + ids.join("\",\"") + "\"" : "");
+			}
+
+			var params = '{"keywords": {"$in":['+(combine_ids($scope.search.split(" ")))+']}}';
+ 			var params2 = '{"author":1}';
+
         	Restangular.all('people/posts').getList({where :params,embedded :params2}).then(function(data) {
         		$scope.total_matches = data.length;
 				$scope.searchresults = data;
         	});
+
+			
         };
 	});
