@@ -76,40 +76,28 @@
         </div>
     </div>
 
-    <div class="row" style="padding-top:25px;" hidden="hidden">
+    <div class="row" style="padding-top:25px;" >
         <div class="col-sm-offset-2 col-sm-7" style="padding-bottom:10px;">
-            <h4 class="text-center"><b>Persons</b>&nbsp;(total <b>20</b>)</h4>
+            <h4 class="text-center"><b>Persons</b>&nbsp;(total <b>{{ totalNames }}</b>)</h4>
         </div>
         <div class="col-sm-offset-2 col-sm-7 panel">
             <br>
           <form method="post" ng-submit="signup()" name="signupForm">
-              <div class="panel media panel-default">
+              <div class="panel media panel-default" ng-repeat="name in searchNames">
+
                     <div class="media-body panel-body">
                         <a class="pull-left" style="padding: 5px;" href="">
-                            <img style="width:28px" class="media-object" src="http://api.randomuser.me/portraits/thumb/men/63.jpg" alt="">
+                           <img style="width:28px" class="media-object" src="{{ name.picture.medium }}" alt="">
                         </a>
                         <strong>
                             <a href=""><h5><b style="color:#444;">
-                                Vegeshna Satyanarayana Raju</b></h5>
+                                {{ name.name.first }} {{ name.name.last }}</b></h5>
                             </a>
                         </strong>
                     </div>
               </div>
           </form>
-          <form method="post" ng-submit="signup()" name="signupForm">
-              <div class="panel media panel-default">
-                    <div class="media-body panel-body">
-                        <a class="pull-left" style="padding: 5px;" href="">
-                            <img style="width:28px" class="media-object" src="http://api.randomuser.me/portraits/thumb/men/63.jpg" alt="">
-                        </a>
-                        <strong>
-                            <a href=""><h5><b style="color:#444;">
-                                Surya Chowdary Muppalla</b></h5>
-                            </a>
-                        </strong>
-                    </div>
-              </div>
-          </form>
+
         </div>
     </div>
 

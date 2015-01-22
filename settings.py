@@ -48,6 +48,7 @@ people = {
         'field': 'username'
     },
 
+
     # Schema definition, based on Cerberus grammar. Check the Cerberus project
     # (https://github.com/nicolaiarocci/cerberus) for details.
     'schema': {

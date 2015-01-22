@@ -16,9 +16,7 @@ angular.module('weberApp')
 				email: $scope.email,
 				password: $scope.password
 			}).then(function(response) {
-
-			$auth.setToken(response.data.token);
-
+				$auth.setToken(response.data.token);
 			}, function(error) {
 				alert("error");
 				$alert({

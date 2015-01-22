@@ -23,8 +23,6 @@ angular.module('weberApp')
 			});
 		});
 
-
-
         $scope.searching = function(){
 
         	function combine_ids(ids) {
@@ -39,6 +37,25 @@ angular.module('weberApp')
 				$scope.searchresults = data;
         	});
 
-			
+			var params = '{"$or":[{"name.first":{"$regex":".*'+$scope.search+'.*"}},{"name.last":{"$regex":".*'+$scope.search+'.*"}},{"username":{"$regex":".*'+$scope.search+'.*"}}]}';
+ 			Restangular.all('people').getList({where :params}).then(function(data) {
+        		$scope.totalNames = data.length;
+				$scope.searchNames = data;
+
+        	});
+
+			if(CurrentUser.userId != undefined){
+				Restangular.all('people').all('searchActivity').post({
+					author: JSON.parse(CurrentUser.userId),
+					content: $scope.search,
+
+				}).then(function(data) {
+					console.log(data)
+				});
+
+			}else{
+				//console.log(CurrentUser.userId)
+			}
+
         };
 	});

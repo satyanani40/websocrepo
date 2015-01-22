@@ -13,6 +13,7 @@ angular.module('weberApp')
 		$http.get('/api/me', {
 			headers: {
 				'Content-Type': 'application/json'
+				'Authorization': $auth.getToken()
 			}
 		}).success(function(user_id) {
 			Restangular.one('people', JSON.parse(user_id)).get().then(function(user) {
