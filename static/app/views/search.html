@@ -11,44 +11,20 @@
             <div class="panel-heading" style="border:none;">
                 <h5 style="margin-top: 5px;margin-bottom: 5px;" class="text-center">
                     <img style="width:28px;margin-top: -5px;border: 2px solid; margin-right: 5px;"
-                         class="pull-left img-circle" src="http://api.randomuser.me/portraits/thumb/women/70.jpg" alt="">
+                         class="pull-left img-circle" src="{{ searchActivity.user_obj.picture.medium}}" alt="">
                     your Previous Searches
-                    <span class="badge badge-danger pull-right">30</span>
+
+                    <span class="badge badge-danger pull-right">{{ searchActivity.posts.length }}</span>
                 </h5>
             </div>
         </div>
         <div class="list-group">
+
             <a href="" class="list-group-item"
-               style="border-top-left-radius: 0px;border-top-right-radius: 0px;">
-               I am going to movie today with.....
+               style="border-top-left-radius: 0px;border-top-right-radius: 0px;" ng-repeat="sresult in searchActivity.posts">
+                {{ sresult.content }}
+
             </a>
-            <a href="#" class="list-group-item">
-                <span class="pull-right label label-danger">1</span>
-                Dapibus ac facilisis in
-            </a>
-            <a href="#" class="list-group-item">Morbi leo risus</a>
-            <a href="#" class="list-group-item">Porta ac consectetur ac</a>
-            <a href="#" class="list-group-item">Vestibulum at eros</a>
-            <a href="#" class="list-group-item"><span class="pull-right label label-danger">9</span>Morbi leo risus</a>
-            <a href="#" class="list-group-item">Dapibus ac facilisis in</a>
-            <a href="" class="list-group-item">
-               I am going to movie today with.....
-            </a>
-            <a href="#" class="list-group-item">Morbi leo risus</a>
-            <a href="#" class="list-group-item">Porta ac consectetur ac</a>
-            <a href="#" class="list-group-item">
-                <span class="pull-right label label-danger">4</span>
-                Dapibus ac facilisis in
-            </a>
-            <a href="#" class="list-group-item">Dapibus ac facilisis in</a>
-            <a href="#" class="list-group-item">Morbi leo risus</a>
-            <a href="#" class="list-group-item">Porta ac consectetur ac</a>
-            <a href="#" class="list-group-item">Vestibulum at eros</a>
-            <a href="#" class="list-group-item">Morbi leo risus</a>
-            <a href="#" class="list-group-item">Dapibus ac facilisis in</a>
-            <a href="#" class="list-group-item">Morbi leo risus</a>
-            <a href="#" class="list-group-item">Porta ac consectetur ac</a>
-            <a href="#" class="list-group-item">Vestibulum at eros</a>
         </div>
     </div>
     <div class="col-sm-7">
@@ -120,12 +96,11 @@
             </div>
         </div>
 
-<<<<<<< HEAD
     <div class="row" style="padding-top:25px;" >
         <div class="col-sm-offset-2 col-sm-7" style="padding-bottom:10px;">
             <h4 class="text-center"><b>Persons</b>&nbsp;(total <b>{{ totalNames }}</b>)</h4>
         </div>
-        <div class="col-sm-offset-2 col-sm-7 panel">
+        <div class="col-sm-12 panel">
             <br>
           <form method="post" ng-submit="signup()" name="signupForm">
               <div class="panel media panel-default" ng-repeat="name in searchNames">
@@ -143,46 +118,7 @@
               </div>
           </form>
 
-=======
-        <div class="row" style="padding-top:25px;">
-            <div class="col-sm-offset-2 col-sm-7" style="padding-bottom:10px;">
-                <h4 class="text-center"><b>Persons</b>&nbsp;(total <b>20</b>)</h4>
-            </div>
-            <div class="col-sm-12 panel">
-                <br>
-              <form method="post" ng-submit="signup()" name="signupForm">
-                  <div class="panel media panel-default">
-                        <div class="media-body panel-body">
-                            <a class="pull-left" style="padding: 5px;" href="">
-                                <img style="width:28px" class="media-object" src="http://api.randomuser.me/portraits/thumb/men/63.jpg" alt="">
-                            </a>
-                            <strong>
-                                <a href=""><h5><b style="color:#444;">
-                                    Vegeshna Satyanarayana Raju</b></h5>
-                                </a>
-                            </strong>
-                        </div>
-                  </div>
-              </form>
-              <form method="post" ng-submit="signup()" name="signupForm">
-                  <div class="panel media panel-default">
-                        <div class="media-body panel-body">
-                            <a class="pull-left" style="padding: 5px;" href="">
-                                <img style="width:28px" class="media-object" src="http://api.randomuser.me/portraits/thumb/men/63.jpg" alt="">
-                            </a>
-                            <strong>
-                                <a href=""><h5><b style="color:#444;">
-                                    Surya Chowdary Muppalla</b></h5>
-                                </a>
-                            </strong>
-                        </div>
-                  </div>
-              </form>
-            </div>
->>>>>>> 0648ae3a975902b4276eb18c46bdcf5b4ee062ce
-        </div>
-
-        <div class="row" style="padding-top:25px;">
+        <div class="row" style="padding-top:25px;" hidden>
             <div class="col-sm-offset-2 col-sm-7" style="padding-bottom:10px;">
                 <h4 class="text-center"><b>Locations</b>&nbsp;(total <b>20</b>)</h4>
             </div>

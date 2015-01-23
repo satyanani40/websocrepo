@@ -126,4 +126,38 @@ angular.module('weberApp')
 
 		};
 		return InfinitePosts;
+	}).factory('SearchActivity', function($http, Restangular, $alert, $timeout) {
+
+		var SearchActivity = function(user_obj) {
+			this.posts = [];
+			this.user_obj = user_obj;
+			this.user_obj.all('searchActivity').getList({
+
+				
+				sort: '[("_created",-1)]'
+			}).then(function(posts) {
+				/*if (posts.length < 10) {
+					this.end = true;
+				}*/
+
+				this.posts.push.apply(this.posts, posts);
+			}.bind(this));
+
+		};
+
+
+		SearchActivity.prototype.addSearchText = function(content) {
+
+			this.user_obj.all('searchActivity').post({
+				author: this.user_obj._id,
+				content: content,
+			}).then(function(data) {
+					this.posts.unshift({
+					author: this.user_obj._id,
+					content: content,
+				});
+
+			}.bind(this));
+		};
+	return SearchActivity;
 	});

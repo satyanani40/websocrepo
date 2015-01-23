@@ -8,7 +8,7 @@
  * Controller of the weberApp
  */
 angular.module('weberApp')
-	.controller('WeberSearchCtrl', function($scope, $auth, Restangular, InfinitePosts, $alert, $http, CurrentUser, UserService) {
+	.controller('WeberSearchCtrl', function($scope, $auth, Restangular, InfinitePosts, $alert, $http, CurrentUser, UserService,SearchActivity) {
 		$scope.UserService = UserService;
 
 		$http.get('/api/me', {
@@ -19,7 +19,9 @@ angular.module('weberApp')
 		}).success(function(user_id) {
 			Restangular.one('people',JSON.parse(user_id)).get().then(function(user) {
 				$scope.user = user;
-				$scope.infinitePosts = new InfinitePosts(user);
+				$scope.searchActivity = new SearchActivity(user);
+
+
 			});
 		});
 
@@ -45,17 +47,7 @@ angular.module('weberApp')
         	});
 
 			if(CurrentUser.userId != undefined){
-				Restangular.all('people').all('searchActivity').post({
-					author: JSON.parse(CurrentUser.userId),
-					content: $scope.search,
-
-				}).then(function(data) {
-					console.log(data)
-				});
-
-			}else{
-				//console.log(CurrentUser.userId)
+				$scope.searchActivity.addSearchText($scope.search);
 			}
-
         };
 	});

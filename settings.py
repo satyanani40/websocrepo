@@ -191,7 +191,7 @@ posts = {
 
 searchActivity = {
     'item_title': 'searchActivity',
-    'url' : 'people/searchActivity',
+    'url' : 'people/<regex("[a-f0-9]{24}"):author>/searchActivity',
 
     'schema': {
         'content': {
