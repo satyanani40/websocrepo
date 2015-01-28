@@ -65,7 +65,7 @@ angular.module('weberApp')
 			this.page = 1;
 			this.end = false;
 
-			Restangular.all('people').all('posts').getList({
+			this.user_obj.all('posts').getList({
 				max_results: 10,
 				page: this.page,
 				sort: '[("_created",-1)]'
@@ -82,7 +82,7 @@ angular.module('weberApp')
 
 		InfinitePosts.prototype.addPost = function(content,similar_keywords) {
 
-			Restangular.all('people').all('posts').post({
+			this.user_obj.all('posts').post({
 				author: this.user_obj._id,
 				content: content,
 				keywords: similar_keywords
@@ -109,7 +109,7 @@ angular.module('weberApp')
 			if (this.busy | this.end) return;
 			this.busy = true;
 
-			Restangular.all('people').all('posts').getList({
+			this.user_obj.all('posts').getList({
 				max_results: 10,
 				page: this.page,
 				sort: '[("_created",-1)]'
@@ -129,35 +129,78 @@ angular.module('weberApp')
 	}).factory('SearchActivity', function($http, Restangular, $alert, $timeout) {
 
 		var SearchActivity = function(user_obj) {
-			this.posts = [];
+			this.searchResult = [];
 			this.user_obj = user_obj;
 			this.user_obj.all('searchActivity').getList({
-
-				
 				sort: '[("_created",-1)]'
-			}).then(function(posts) {
-				/*if (posts.length < 10) {
-					this.end = true;
-				}*/
-
-				this.posts.push.apply(this.posts, posts);
+			}).then(function(sResult) {
+				this.searchResult.push.apply(this.searchResult,sResult);
 			}.bind(this));
 
 		};
 
 
-		SearchActivity.prototype.addSearchText = function(content) {
-
+		SearchActivity.prototype.addSearchText = function(content,resultcount,resultIds,keywords) {
 			this.user_obj.all('searchActivity').post({
 				author: this.user_obj._id,
 				content: content,
+				keywords:keywords,
+				totalResults:resultcount,
+				matchedPosts:resultIds
 			}).then(function(data) {
-					this.posts.unshift({
+					this.searchResult.unshift({
 					author: this.user_obj._id,
 					content: content,
 				});
 
 			}.bind(this));
 		};
+
+		function combine_ids(ids) {
+   				return (ids.length ? "\"" + ids.join("\",\"") + "\"" : "");
+			}
+
+		SearchActivity.prototype.getMatchedNewResults = function(searchPostId) {
+			var params = '{"_id":"'+searchPostId+'"}';
+			this.user_obj.all('searchActivity').getList({
+				where :params,
+				sort: '[("_created",-1)]'
+			}).then(function(sResult) {
+				console.log(sResult[0].matchedPosts);
+				var param = '{"_id":{"$in":['+combine_ids(sResult[0].matchedPosts)+']}}';
+				Restangular.all("posts").getList({
+					where: param
+				}).then(function(searchResults){
+					console.log(searchResults)
+				});
+			}.bind(this));
+		};
+
+
 	return SearchActivity;
+	}).factory('matchMeResults', function($http, Restangular, $alert, $timeout) {
+
+		var  matchMeResults = function() {
+			this.total_matches = '';
+			this.searchresults = []
+		};
+
+		matchMeResults.prototype.getMatchResults = function(searchPostId) {
+			var params = '{"_id":"'+searchPostId+'"}';
+			this.user_obj.all('searchActivity').getList({
+				where :params,
+				sort: '[("_created",-1)]'
+			}).then(function(sResult) {
+				console.log(sResult[0].matchedPosts);
+				var param = '{"_id":{"$in":['+combine_ids(sResult[0].matchedPosts)+']}}';
+				Restangular.all("posts").getList({
+					where: param
+				}).then(function(searchResults){
+					console.log(searchResults)
+				});
+			}.bind(this));
+		};
+
+
+		return matchMeResults;
 	});

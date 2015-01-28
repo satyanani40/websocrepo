@@ -11,6 +11,11 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from bson import json_util
 from framework.match_me_algorithm import *
 import requests
+#import grequests
+import flask
+import urllib2, random
+from views import get_search
+from weberdb import WeberDB
 
 class TokenAuth(TokenAuth):
 	def check_auth(self, token, allowed_roles, resource, method):
@@ -19,7 +24,7 @@ class TokenAuth(TokenAuth):
 
 
 app = Eve(__name__,static_url_path='/static')
-
+app.debug = True,
 
 def create_token(user):
     payload = {
@@ -118,5 +123,51 @@ def signup():
 		token = create_token(user)
 		return jsonify(token=token)
 
-#if __name__ == '__main__':
-app.run(host='localhost', port=8000, debug=True)
+message = 0
+def testing():
+    global message
+    yield 'data: %s\n\n' % message
+    message = 0
+
+
+"""from flask import make_response
+from functools import wraps, update_wrapper
+from datetime import datetime
+
+def nocache(view):
+    @wraps(view)
+    def no_cache(*args, **kwargs):
+        response = make_response(view(*args, **kwargs))
+        response.headers['Last-Modified'] = datetime.now()
+        response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0'
+        response.headers['Pragma'] = 'no-cache'
+        response.headers['Expires'] = '-1'
+        response.headers['mimetype'] = 'text/event-stream'
+        return response
+
+    return update_wrapper(no_cache, view)"""
+
+@app.route('/stream')
+#@nocache
+def stream():
+    response = Response()
+    headers ={
+        'X-UA-Compatible' : 'IE=Edge,chrome=1',
+        'Cache-Control' : 'public, max-age=0'
+    }
+    response.mimetype = 'text/event-stream'
+    response.data = testing()
+    return Response(testing(),mimetype='text/event-stream')
+
+def after_post_inserted(items):
+    for atribute,value in items[0].iteritems():
+        if(atribute == "keywords"):
+            db = WeberDB()
+            isUpdated =  db.update_search(value,items[0]['_id'])
+            if(isUpdated['nModified'] >= 1):
+                global message
+                message = 1
+
+app.on_inserted_posts+= after_post_inserted
+
+app.run(host='localhost',port=8000)

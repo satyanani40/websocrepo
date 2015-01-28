@@ -1,0 +1,9 @@
+from pymongo import MongoClient
+
+class WeberDB(object):
+  def __init__(self):
+      client = MongoClient()
+      
+      
+  
+  

@@ -8,6 +8,7 @@ MONGO_USERNAME = 'test'
 MONGO_PASSWORD = 'test'
 MONGO_DBNAME = 'test'
 
+
 URL_PREFIX = 'api'
 
 
@@ -35,6 +36,83 @@ MONGO_QUERY_BLACKLIST = ['$where']
 # Our API will expose two resources (MongoDB collections): 'people' and
 # 'works'. In order to allow for proper data validation, we define beaviour
 # and structure.
+
+posts_schema = {
+
+        'author': {
+            'type': 'objectid',
+            'required': True,
+            'data_relation': {
+                     'resource': 'people',
+                     'field': '_id',
+                     'embeddable': True
+            },
+        },
+        'type': {
+            'type': 'string',
+            'allowed': ["text", "image", "video"],
+        },
+        'content': {
+            'type': 'string',
+            'required': True
+        },
+        'location': {
+            'type': 'dict',
+            'schema': {
+                'address': {'type': 'string'},
+                'city': {'type': 'string'}
+            }
+        },
+        'keywords': {
+            'type': 'list',
+        },
+
+    }
+
+searchActivity_schema = {
+        'content': {
+            'type': 'string',
+            'required': True,
+
+        },
+        'keywords': {
+            'type': 'list',
+        },
+
+        'author': {
+            'type': 'objectid',
+            'data_relation': {
+                     'resource': 'people',
+                     'field': '_id',
+                     'embeddable': True
+            },
+        },
+        'totalResults':{
+            'type':'integer',
+            'default':0
+        },
+        'newResults':{
+            'type':'integer',
+            'default':0
+        },
+        'seen':{
+            'type':'boolean',
+            'default':True
+        },
+        'matchedPosts': {
+            'type': 'list',
+            'schema': {
+                'type': 'objectid',
+                'data_relation': {
+                    'resource': 'posts',
+                    'field':'_id',
+                    'embeddable': True
+                }
+            }
+        }
+
+    }
+
 people = {
     # 'title' tag used in item links.
     'item_title': 'person',
@@ -153,67 +231,35 @@ people = {
 
 posts = {
     'item_title': 'posts',
+    'schema':posts_schema,
     #'url': 'people/posts/<regex("[a-f0-9]{24}"):author>',
-    'url' : 'people/posts/',
-
-    'schema': {
-
-        'author': {
-            'type': 'objectid',
-            'required': True,
-            'data_relation': {
-                     'resource': 'people',
-                     'field': '_id',
-                     'embeddable': True
-            },
-        },
-        'type': {
-            'type': 'string',
-            'allowed': ["text", "image", "video"],
-        },
-        'content': {
-            'type': 'string',
-            'required': True
-        },
-        'location': {
-            'type': 'dict',
-            'schema': {
-                'address': {'type': 'string'},
-                'city': {'type': 'string'}
-            }
-        },
-        'keywords': {
-            'type': 'list',
-        },
-
-    }
+    'url' : 'posts',
 }
 
 searchActivity = {
     'item_title': 'searchActivity',
-    'url' : 'people/<regex("[a-f0-9]{24}"):author>/searchActivity',
-
-    'schema': {
-        'content': {
-            'type': 'string',
-            'required': True,
-            'unique':True
-        },
-        'author': {
-            'type': 'objectid',
-            'data_relation': {
-                     'resource': 'people',
-                     'field': '_id',
-                     'embeddable': True
-            },
-        },
-
-    }
+    'schema' : searchActivity_schema,
+    'url' : 'searchActivity',
 }
+
+people_searchActivity = {
+    'schema': searchActivity_schema,
+    'url': 'people/<regex("[a-f0-9]{24}"):author>/searchActivity',
+    'datasource': {"source": "searchActivity"}
+}
+
+people_posts = {
+    'schema': posts_schema,
+    'url': 'people/<regex("[a-f0-9]{24}"):author>/posts',
+    'datasource': {"source": "posts"}
+}
+
 # The DOMAIN dict explains which resources will be available and how they will
 # be accessible to the API consumer.
 DOMAIN = {
     'people': people,
     'posts': posts,
-    'searchActivity': searchActivity
-    }
+    'searchActivity': searchActivity,
+    'people_searchActivity':people_searchActivity,
+    'people_posts':people_posts
+   }

@@ -14,16 +14,27 @@
                          class="pull-left img-circle" src="{{ searchActivity.user_obj.picture.medium}}" alt="">
                     your Previous Searches
 
-                    <span class="badge badge-danger pull-right">{{ searchActivity.posts.length }}</span>
+                    <span class="badge badge-danger pull-right">{{ searchActivity.searchResult.length }}</span>
                 </h5>
             </div>
         </div>
         <div class="list-group">
 
             <a href="" class="list-group-item"
-               style="border-top-left-radius: 0px;border-top-right-radius: 0px;" ng-repeat="sresult in searchActivity.posts">
-                {{ sresult.content }}
-
+               style="border-top-left-radius: 0px;border-top-right-radius: 0px;" ng-repeat="sresult in searchActivity.searchResult">
+                <div id="{{ sresult._id}}" my-directive>
+                    <div class="row">
+                        <div class="col-sm-10">
+                            <div style="overflow:hidden;text-overflow:ellipsis;">
+                            {{ sresult._id}}
+                            {{ sresult.content }}
+                            </div>
+                        </div>
+                        <div class="col-sm-2">
+                            <span class="label label-danger">{{ sresult.newResults }}</span>
+                        </div>
+                    </div>
+                </div>
             </a>
         </div>
     </div>
