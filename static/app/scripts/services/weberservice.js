@@ -148,9 +148,12 @@ angular.module('weberApp')
 				totalResults:resultcount,
 				matchedPosts:resultIds
 			}).then(function(data) {
+					console.log(data)
 					this.searchResult.unshift({
 					author: this.user_obj._id,
 					content: content,
+					_id: data._id,
+					matchesCount:resultcount
 				});
 
 			}.bind(this));
@@ -160,47 +163,77 @@ angular.module('weberApp')
    				return (ids.length ? "\"" + ids.join("\",\"") + "\"" : "");
 			}
 
-		SearchActivity.prototype.getMatchedNewResults = function(searchPostId) {
-			var params = '{"_id":"'+searchPostId+'"}';
-			this.user_obj.all('searchActivity').getList({
-				where :params,
-				sort: '[("_created",-1)]'
-			}).then(function(sResult) {
-				console.log(sResult[0].matchedPosts);
-				var param = '{"_id":{"$in":['+combine_ids(sResult[0].matchedPosts)+']}}';
-				Restangular.all("posts").getList({
-					where: param
-				}).then(function(searchResults){
-					console.log(searchResults)
-				});
-			}.bind(this));
-		};
 
 
 	return SearchActivity;
-	}).factory('matchMeResults', function($http, Restangular, $alert, $timeout) {
+	}).factory('MatchMeResults', function($http, Restangular, $alert, $timeout,CurrentUser) {
 
-		var  matchMeResults = function() {
+		var  MatchMeResults = function() {
+
 			this.total_matches = '';
-			this.searchresults = []
+			this.mresults = [];
+			this.matchedids = [];
+			this.totalNames = '';
+			this.searchNames =[];
 		};
 
-		matchMeResults.prototype.getMatchResults = function(searchPostId) {
+		function combine_ids(ids) {
+   				return (ids.length ? "\"" + ids.join("\",\"") + "\"" : "");
+			}
+
+		MatchMeResults.prototype.getMatchedNewResults = function(searchPostId) {
+
 			var params = '{"_id":"'+searchPostId+'"}';
-			this.user_obj.all('searchActivity').getList({
+			var data = Restangular.one("people",JSON.parse(CurrentUser.userId)).all('searchActivity').getList({
 				where :params,
 				sort: '[("_created",-1)]'
 			}).then(function(sResult) {
-				console.log(sResult[0].matchedPosts);
+				console.log("=================")
+				console.log(sResult[0])
 				var param = '{"_id":{"$in":['+combine_ids(sResult[0].matchedPosts)+']}}';
-				Restangular.all("posts").getList({
-					where: param
-				}).then(function(searchResults){
-					console.log(searchResults)
-				});
+				var param2 = '{"author":1}';
+				var data2 = Restangular.all("posts").getList({
+					where: param,
+					embedded: param2
+				}).then(function(data){
+					this.total_matches = data.length;
+					this.mresults.push.apply(this.mresults,data);
+				}.bind(this));
+				return data2
 			}.bind(this));
+			return data
 		};
 
+		MatchMeResults.prototype.getMatchResults = function(content,keywords) {
+			var param1 = '{"$or":[{"keywords": {"$in":['+keywords+']}},{"content":{"$regex":".*'+content+'.*"}}]}';
+			var param2 = '{"author":1}';
+			var data = '';
+			var data = Restangular.all('posts').getList({
+				where :param1,embedded :param2
+				}).then(function(data) {
+					this.total_matches = data.length;
+					this.mresults.push.apply(this.mresults,data);
 
-		return matchMeResults;
+					var i;
+					for(i=0;i<this.total_matches;i++){
+						this.matchedids.push(this.mresults[i]['_id'])
+					}
+				}.bind(this));
+        	return data;
+
+		};
+
+		MatchMeResults.prototype.getMatchPeoples = function(searchText) {
+			var params = '{"$or":[{"name.first":{"$regex":".*'+searchText+'.*"}},{"name.last":{"$regex":".*'+searchText+'.*"}},{"username":{"$regex":".*'+searchText+'.*"}}]}';
+			var data = Restangular.all('people').getList({
+				where :params
+				}).then(function(data) {
+					console.log(data)
+					this.totalNames = data.length;
+					this.searchNames.push.apply(this.searchNames,data);
+				}.bind(this));
+				return data
+			};
+
+		return MatchMeResults;
 	});

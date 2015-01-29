@@ -129,24 +129,6 @@ def testing():
     yield 'data: %s\n\n' % message
     message = 0
 
-
-"""from flask import make_response
-from functools import wraps, update_wrapper
-from datetime import datetime
-
-def nocache(view):
-    @wraps(view)
-    def no_cache(*args, **kwargs):
-        response = make_response(view(*args, **kwargs))
-        response.headers['Last-Modified'] = datetime.now()
-        response.headers['Cache-Control'] = 'no-store, no-cache, must-revalidate, post-check=0, pre-check=0, max-age=0'
-        response.headers['Pragma'] = 'no-cache'
-        response.headers['Expires'] = '-1'
-        response.headers['mimetype'] = 'text/event-stream'
-        return response
-
-    return update_wrapper(no_cache, view)"""
-
 @app.route('/stream')
 #@nocache
 def stream():
@@ -168,6 +150,6 @@ def after_post_inserted(items):
                 global message
                 message = 1
 
-app.on_inserted_posts+= after_post_inserted
+app.on_inserted_people_posts+= after_post_inserted
 
 app.run(host='localhost',port=8000)

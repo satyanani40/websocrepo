@@ -26,7 +26,6 @@
                     <div class="row">
                         <div class="col-sm-10">
                             <div style="overflow:hidden;text-overflow:ellipsis;">
-                            {{ sresult._id}}
                             {{ sresult.content }}
                             </div>
                         </div>
@@ -82,14 +81,14 @@
 
             <div class="col-sm-offset-2 col-sm-7" style="padding-bottom:10px;">
                 <h4 class="text-center">
-                    <b>Matched</b>&nbsp;(total <b>{{ total_matches }}</b>)
+                    <b>Matched</b>&nbsp;(total <b>{{ matchmeresults.total_matches }}</b>)
                 </h4>
             </div>
             <div class="col-sm-12 panel" style=""  >
                 <br>
               <form method="post" ng-submit="signup()" name="signupForm">
+                  <div class="panel media panel-default" ng-repeat="rs in matchmeresults.mresults">
 
-                  <div class="panel media panel-default" ng-repeat="rs in searchresults">
                         <div class="media-body panel-heading">
                             <a class="pull-left" style="padding: 5px;" href="">
                                 <img style="width:28px" class="media-object img-circle" src="{{ rs.author.picture.medium }}" alt="">
@@ -109,12 +108,12 @@
 
     <div class="row" style="padding-top:25px;" >
         <div class="col-sm-offset-2 col-sm-7" style="padding-bottom:10px;">
-            <h4 class="text-center"><b>Persons</b>&nbsp;(total <b>{{ totalNames }}</b>)</h4>
+            <h4 class="text-center"><b>Persons</b>&nbsp;(total <b>{{ matchmeresults.totalNames }}</b>)</h4>
         </div>
         <div class="col-sm-12 panel">
             <br>
           <form method="post" ng-submit="signup()" name="signupForm">
-              <div class="panel media panel-default" ng-repeat="name in searchNames">
+              <div class="panel media panel-default" ng-repeat="name in matchmeresults.searchNames">
 
                     <div class="media-body panel-body">
                         <a class="pull-left" style="padding: 5px;" href="">

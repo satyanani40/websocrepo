@@ -11,8 +11,9 @@ angular.module('weberApp')
 	.controller('WeberSearchCtrl', function($scope, $auth, Restangular,
 	 										InfinitePosts, $alert, $http,
 	 										CurrentUser, UserService,
-	 										SearchActivity, matchMeResults) {
+	 										SearchActivity, MatchMeResults) {
 		$scope.UserService = UserService;
+
 		$http.get('/api/me', {
 			headers: {
 				'Content-Type': 'application/json',
@@ -33,9 +34,6 @@ angular.module('weberApp')
 			});
 		});
 
-		$scope.loadNewResullts = function(searchId){
-			$scope.searchActivity.getMatchedNewResults(searchId);
-		};
 
 		$scope.searching = function(){
 
@@ -43,36 +41,35 @@ angular.module('weberApp')
    				return (ids.length ? "\"" + ids.join("\",\"") + "\"" : "");
 			}
 
-			$scope.matchmeresults = new matchMeResults();
-			console.log($scope.matchmeresults)
-			/*function getSearchKarray(ids) {
-   				return (ids.length ?  ids.join("\",\"")  : "");
-			}*/
-
-			var params = '{"$or":[{"keywords": {"$in":['+(combine_ids($scope.search.split(" ")))+']}},{"content":{"$regex":".*'+$scope.search+'.*"}}]}';
+			var matchResults = new MatchMeResults();
+			var params1 = '{"$or":[{"keywords": {"$in":['+(combine_ids($scope.search.split(" ")))+']}},{"content":{"$regex":".*'+$scope.search+'.*"}}]}';
 			var params2 = '{"author":1}';
-        	Restangular.all('posts').getList({where :params,embedded :params2}).then(function(data) {
-        		$scope.total_matches = data.length;
-        		$scope.searchresults = data;
-        		var i;
-        		var resultIds = []
-        		for(i=0;i<$scope.total_matches;i++){
-        			resultIds.push($scope.searchresults[i]['_id'])
-        		}
-        		if(CurrentUser.userId != undefined){
-        			$scope.searchActivity.addSearchText($scope.search,$scope.total_matches,resultIds,$scope.search.split(" "));
-				}
-        	});
+			matchResults.getMatchResults($scope.search,combine_ids($scope.search.split(" "))).then(function() {
+					$scope.matchmeresults = matchResults;
 
-			var params = '{"$or":[{"name.first":{"$regex":".*'+$scope.search+'.*"}},{"name.last":{"$regex":".*'+$scope.search+'.*"}},{"username":{"$regex":".*'+$scope.search+'.*"}}]}';
- 			Restangular.all('people').getList({where :params}).then(function(data) {
-        		$scope.totalNames = data.length;
-				$scope.searchNames = data;
+       				 if(CurrentUser.userId != 'undefined'){
+						$scope.searchActivity.addSearchText($scope.search,matchResults.total_matches,matchResults.matchedids,$scope.search.split(" "));
+					}
+   			});
 
-        	});
+			matchResults.getMatchPeoples($scope.search).then(function() {
+					$scope.matchmeresults = matchResults;
+					console.log($scope.matchmeresults)
 
-
+			});
         };
+
+		$scope.loadNewResullts = function(searchId){
+			var matchResults = new MatchMeResults();
+			matchResults.getMatchedNewResults(searchId).then(function() {
+					console.log(matchResults)
+					$scope.matchmeresults = matchResults;
+					//console.log($scope.matchmeresults)
+
+			});
+
+		};
+
 	}).directive('myDirective', function(){
     	return function(scope, element, attr){
         element.bind('click', function(){
