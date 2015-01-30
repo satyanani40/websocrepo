@@ -8,7 +8,7 @@
  * Controller of the weberApp
  */
 angular.module('weberApp')
-	.controller('WeberSearchCtrl', function($scope, $auth, Restangular,
+		.controller('WeberSearchCtrl', function($scope, $auth, Restangular,
 	 										InfinitePosts, $alert, $http,
 	 										CurrentUser, UserService,
 	 										SearchActivity, MatchMeResults) {
@@ -36,6 +36,8 @@ angular.module('weberApp')
 
 
 		$scope.searching = function(){
+
+
 
         	function combine_ids(ids) {
    				return (ids.length ? "\"" + ids.join("\",\"") + "\"" : "");
@@ -72,8 +74,10 @@ angular.module('weberApp')
 
 	}).directive('myDirective', function(){
     	return function(scope, element, attr){
+		console.log(attr)
         element.bind('click', function(){
         	scope.loadNewResullts(element[0].id);
+
         });
     };
 });

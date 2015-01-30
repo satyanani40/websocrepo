@@ -132,7 +132,8 @@ angular.module('weberApp')
 			this.searchResult = [];
 			this.user_obj = user_obj;
 			this.user_obj.all('searchActivity').getList({
-				sort: '[("_created",-1)]'
+				sort: '[("_created",-1)]',
+				seed: Math.random()
 			}).then(function(sResult) {
 				this.searchResult.push.apply(this.searchResult,sResult);
 			}.bind(this));
@@ -166,7 +167,7 @@ angular.module('weberApp')
 
 
 	return SearchActivity;
-	}).factory('MatchMeResults', function($http, Restangular, $alert, $timeout,CurrentUser) {
+	}).factory('MatchMeResults', function($http, Restangular, $alert, $timeout,CurrentUser,$auth) {
 
 		var  MatchMeResults = function() {
 
@@ -184,23 +185,38 @@ angular.module('weberApp')
 		MatchMeResults.prototype.getMatchedNewResults = function(searchPostId) {
 
 			var params = '{"_id":"'+searchPostId+'"}';
+
 			var data = Restangular.one("people",JSON.parse(CurrentUser.userId)).all('searchActivity').getList({
 				where :params,
-				sort: '[("_created",-1)]'
+				sort: '[("_created",-1)]',
+				seed : Math.random()
 			}).then(function(sResult) {
-				console.log("=================")
-				console.log(sResult[0])
+
 				var param = '{"_id":{"$in":['+combine_ids(sResult[0].matchedPosts)+']}}';
 				var param2 = '{"author":1}';
 				var data2 = Restangular.all("posts").getList({
 					where: param,
-					embedded: param2
+					embedded: param2,
+					seed : Math.random()
 				}).then(function(data){
 					this.total_matches = data.length;
 					this.mresults.push.apply(this.mresults,data);
 				}.bind(this));
+
+				Restangular.one("searchActivity",searchPostId).patch(
+					{newResults:0},{},
+					{
+						'Content-Type': 'application/json',
+						'If-Match': sResult[0]._etag,
+						'Authorization': $auth.getToken()
+					}
+				);
 				return data2
+
+
+
 			}.bind(this));
+
 			return data
 		};
 
@@ -209,7 +225,8 @@ angular.module('weberApp')
 			var param2 = '{"author":1}';
 			var data = '';
 			var data = Restangular.all('posts').getList({
-				where :param1,embedded :param2
+				where :param1,
+				embedded :param2
 				}).then(function(data) {
 					this.total_matches = data.length;
 					this.mresults.push.apply(this.mresults,data);
@@ -236,4 +253,10 @@ angular.module('weberApp')
 			};
 
 		return MatchMeResults;
+	}).factory("TokenRestangular", function (Restangular, StorageService) {
+   		 return Restangular.withConfig(function (RestangularConfigurer) {
+    		// Set access token in header.
+   			 RestangularConfigurer.setDefaultHeaders({Authorization:'Bearer '+ StorageService.get("access_token")});
+
+		});
 	});
