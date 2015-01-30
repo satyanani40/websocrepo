@@ -73,11 +73,10 @@ angular.module('weberApp')
 		};
 
 	}).directive('myDirective', function(){
-    	return function(scope, element, attr){
-		console.log(attr)
-        element.bind('click', function(){
+    	return function(scope, element, attrib){
+    	element.bind('click', function(){
         	scope.loadNewResullts(element[0].id);
-
+			$('#notific'+element[0].id).css({"display":"none"});
         });
     };
 });

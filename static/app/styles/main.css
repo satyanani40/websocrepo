@@ -5,9 +5,8 @@ body {
 	font-size: 14px;
 	line-height: 1.428571429;
 }
-.click_hide{
-display:none;
-}
+.in { display:none; }
+
 #screen-overlay {
 	background: rgba(0,0,0,.8);
 	height: 100%;

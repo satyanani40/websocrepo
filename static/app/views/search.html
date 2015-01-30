@@ -22,15 +22,15 @@
 
             <a href="" class="list-group-item"
                style="border-top-left-radius: 0px;border-top-right-radius: 0px;" ng-repeat="sresult in searchActivity.searchResult">
-                <div id="{{ sresult._id}}" my-directive ng-model="hide_danger_div">
+                <div id="{{ sresult._id}}" my-directive>
                     <div class="row">
-                        <div class="col-sm-10">
+                        <div class="col-sm-10" ng-model="checked">
                             <div style="overflow:hidden;text-overflow:ellipsis;">
                             {{ sresult.content }}
                             </div>
                         </div>
-                        <div class="col-sm-2" ng-if="sresult.newResults != 0" ng-class="{'click_hide':hide_danger_div}" >
-                            <span class="label label-danger" >{{ sresult.newResults }}</span>
+                        <div class="col-sm-2" ng-if="sresult.newResults != 0" >
+                            <span class="label label-danger" id="notific{{ sresult._id}}">{{ sresult.newResults }}</span>
                         </div>
                     </div>
                 </div>
