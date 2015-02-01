@@ -11,18 +11,23 @@ angular.module('weberApp')
 	.controller('UserprofileCtrl', function($scope, $routeParams, Restangular, InfinitePosts, CurrentUser, UserService) {
 		
 		$scope.UserService = UserService;
-		console.log($routeParams)
 		var user_obj = Restangular.one('people', $routeParams.username);
 		user_obj.get().then(function(user) {
 			$scope.user = user;
-
-			$scope.addFriend = function() {
-				console.log("hai")
-				$scope.user.patch({
+			console.log($scope.user)
+            /*{
 					'notifications': {
-						'friend-requests': [CurrentUser.userId]
+						'friend-requests': ['54ca57e95f4de41fedbc2755']
 					}
-				}).then(function(data){
+				},*/
+			$scope.addFriend = function() {
+                $scope.user.patch(
+				    {
+				        "notifications":{
+				            "friend-requests":[JSON.parse(CurrentUser.userId)]
+				            }
+				    }
+				).then(function(data){
 					console.log(data)
 
 				});
