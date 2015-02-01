@@ -1,3 +1,12 @@
+sudo apt-get install virtualenv
+ 
+create virtualenv
+==================
+virtualenv venv
+
+activate virtualenv
+==================
+goto venv folder then type: source bin/activate
 
 pip install PyJwt
 
