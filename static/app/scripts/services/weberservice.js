@@ -252,7 +252,7 @@ angular.module('weberApp')
 				return data
 			};
 
-		return MatchMeResults;
+		return MatchMeResults;  
 	}).factory('FriendsNotific', function($http, Restangular, $alert, $timeout) {
 
 		var FriendsNotific = function(user_obj) {
