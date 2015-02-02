@@ -13,36 +13,11 @@ angular.module('weberApp')
 
 		$scope.UserService = UserService;
 		var user_obj = Restangular.one('people', $routeParams.username);
+
 		user_obj.get().then(function(user) {
 			$scope.user = user;
-<<<<<<< HEAD
-            $scope.addFriend = function() {
 
-				/* $scope.user.patch({
-				    "notifications":{
-						    "friend_requests": [JSON.parse(CurrentUser.userId)],
-						     "updates": "hellow"
-						}
-				}).then(function(data){
-					console.log(data)
 
-				});*/
-
-				$scope.user.patch({
-
-				    "notifications":{
-                            "$push":{
-                                "friend_requests":" "
-                            }
-						}
-				}).then(function(data){
-=======
-			console.log($scope.user)
-            /*{
-					'notifications': {
-						'friend-requests': ['54ca57e95f4de41fedbc2755']
-					}
-				},*/
 			$scope.addFriend = function() {
                 $scope.user.patch(
 				    {
@@ -51,7 +26,7 @@ angular.module('weberApp')
 				            }
 				    }
 				).then(function(data){
->>>>>>> 947207f1893e7960f9bf7df3963082cd96cf9799
+
 					console.log(data)
 
 				});

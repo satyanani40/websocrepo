@@ -1,0 +1,39 @@
+<div  class="navbar navbar-inverse navbar-fixed-top" role="navigation" bs-navbar>
+        <div class="container" style="width:;">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="/#/" ng-if="isAuthenticated()">
+                    <span class="glyphicon glyphicon-film"></span>
+                    <strong>Weber</strong>
+                </a>
+            </div>
+            <div class="navbar-collapse collapse">
+                <div class="col-sm-6" ng-controller="InstantsearchCtrl">
+                    <form class="navbar-form" role="search" ng-if="isAuthenticated()">
+                        <div class="input-group col-sm-12 input-block">
+                            <input type="text" class="form-control" placeholder="Search" name="q" ng-model="search">
+                            <div class="input-group-btn">
+                                <button class="btn btn-default" type="submit" ng-click="searchSubmit()"><i class="glyphicon glyphicon-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <ul class="nav navbar-nav pull-right" ng-if="!isAuthenticated()">
+                    <li data-match-route="/login"><a href="#/login">Login</a>
+                    </li>
+                    <li data-match-route="/signup"><a href="#/signup">Sign up</a>
+                    </li>
+                </ul>
+                <ul class="nav navbar-nav navbar-right" ng-if="isAuthenticated()">
+                    <li class="active"><a href="#/">Home</a></li>
+                    <li><a href="#/weber_search">Match Me</a></li>
+                    <li><a href="#/friends">Friends</a></li>
+                    <li>
+                        <a href="" bs-dropdown="dropdown" style="padding-top: 11px; padding-bottom: 11px;">
+                            <img style="width:28px; border: 2px solid; margin-right: 5px;" class="img-circle" src="{{currentUser.user.picture.thumbnail}}" alt="">{{currentUser.user.username}} <span class="caret"></span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+	</div>

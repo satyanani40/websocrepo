@@ -267,10 +267,70 @@ angular.module('weberApp')
 		};
 
 		return FriendsNotific;
-	}).factory("TokenRestangular", function (Restangular, StorageService) {
+	}).directive('navbar', function () {
+    return {
+        restrict: 'A', //This menas that it will be used as an attribute and NOT as an element. I don't like creating custom HTML elements
+        replace: true,
+        templateUrl: "/static/app/views/navbar.html",
+        controller:function ($scope, $auth, CurrentUser, $alert, $location, UserService,$http,Restangular,SearchActivity) {
+            console.log("called nav bar")
+
+            $scope.currentUser = CurrentUser;
+			$scope.UserService = UserService;
+
+			$scope.dropdown = [{
+				"text": "Settings",
+				"href": "#/settings"
+			},{
+				"text": "Logout",
+				"click": "logout()"
+			}];
+			$scope.logout = function() {
+				CurrentUser.reset();
+				$auth.logout();
+				$location.path("/login");
+			};
+			$scope.isAuthenticated = function() {
+				return $auth.isAuthenticated();
+			};
+
+
+
+			$http.get('/api/me', {
+			headers: {
+				'Content-Type': 'application/json',
+				'Authorization': $auth.getToken()
+			}
+		}).success(function(user_id) {
+			Restangular.one('people',JSON.parse(user_id)).get().then(function(user) {
+				$scope.user = user;
+				$scope.searchActivity = new SearchActivity(user);
+				var namespace = '/test';
+				var source = new EventSource('/stream');
+				source.onmessage = function (event) {
+					console.log(event)
+					data = JSON.parse(event.data)
+
+					if(parseInt(data.searchNotific)){
+     					$scope.searchActivity = new SearchActivity(user);
+     				}
+     				if(parseInt(data.friendsnotific)){
+     					$scope.searchActivity = new SearchActivity(user);
+     				}
+
+  				};
+			});
+		});
+
+
+
+
+			}
+    }
+});/*.factory("TokenRestangular", function (Restangular, StorageService) {
    		 return Restangular.withConfig(function (RestangularConfigurer) {
     		// Set access token in header.
    			 RestangularConfigurer.setDefaultHeaders({Authorization:'Bearer '+ StorageService.get("access_token")});
 
 		});
-	});
+	});*/

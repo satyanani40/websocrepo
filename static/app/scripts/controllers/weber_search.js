@@ -13,8 +13,9 @@ angular.module('weberApp')
 	 										CurrentUser, UserService,
 	 										SearchActivity, MatchMeResults) {
 		$scope.UserService = UserService;
+		console.log($scope.UserService)
 
-		$http.get('/api/me', {
+		/*$http.get('/api/me', {
 			headers: {
 				'Content-Type': 'application/json',
 				'Authorization': $auth.getToken()
@@ -38,7 +39,7 @@ angular.module('weberApp')
 
   				};
 			});
-		});
+		});*/
 
 
 		$scope.searching = function(){
