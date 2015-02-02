@@ -8,7 +8,7 @@
  * Controller of the weberApp
  */
 angular.module('weberApp')
-	.controller('LoginCtrl', function($scope, $auth, $alert) {
+	.controller('LoginCtrl', function($scope, $auth, $alert,$location) {
 
 		$scope.submitLogin = function() {
 

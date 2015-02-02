@@ -107,9 +107,7 @@ def getSearchResults():
 def getSimilarWords():
     words = parse_sentence(request.args.get("new_post"))
     post_tokens = create_tokens(request.args.get("new_post"))
-    print '--------post tokens------'
     keywords = set(list(post_tokens)+list(words))
-    #print words
     return json.dumps(list(set(keywords)))
 
 @app.route('/auth/signup', methods=['POST'])
@@ -123,23 +121,28 @@ def signup():
 		token = create_token(user)
 		return jsonify(token=token)
 
-message = 0
-def testing():
-    global message
-    yield 'data: %s\n\n' % message
-    message = 0
+friendsNotific = 0
+searchNotific = 0
+
+def check_updates():
+
+    global friendsNotific, searchNotific
+
+    if(searchNotific):
+        print 'yessssssss'
+        data = json.dumps({'friendsnotific':friendsNotific,'searchNotific':searchNotific})
+        yield 'data: %s \n\n' % data
+        searchNotific = 0
+    if(friendsNotific):
+        print 'noooooooooooo'
+        data = json.dumps({'friendsnotific':friendsNotific,'searchNotific':searchNotific})
+        yield 'data: %s \n\n' % data
+        friendsNotific = 0
 
 @app.route('/stream')
 #@nocache
 def stream():
-    response = Response()
-    headers ={
-        'X-UA-Compatible' : 'IE=Edge,chrome=1',
-        'Cache-Control' : 'public, max-age=0'
-    }
-    response.mimetype = 'text/event-stream'
-    response.data = testing()
-    return Response(testing(),mimetype='text/event-stream')
+    return Response(check_updates(),mimetype='text/event-stream')
 
 def after_post_inserted(items):
     for atribute,value in items[0].iteritems():
@@ -147,9 +150,17 @@ def after_post_inserted(items):
             db = WeberDB()
             isUpdated =  db.update_search(value,items[0]['_id'])
             if(isUpdated['nModified'] >= 1):
-                global message
-                message = 1
+                global searchNotific
+                searchNotific = 1
+
+
+def after_friend_notification_get(updates, original):
+    print 'hhhhhhhhhhhhhhhhhhhhh'
+    global friendsNotific
+    friendsNotific = 1
+
 
 app.on_inserted_people_posts+= after_post_inserted
+app.on_updated_people+= after_friend_notification_get
 
 app.run(host='localhost',port=8000)

@@ -89,6 +89,13 @@ angular
 			.when('/settings', {
 				templateUrl: '/static/app/views/settings.html',
 				controller: 'SettingsCtrl',
+				resolve: {
+					authenticated: function($location, $auth) {
+						if (!$auth.isAuthenticated()) {
+							return $location.path('/login');
+						}
+					}
+				}
 			})
 			.when('/matchme', {
 				templateUrl: '/static/app/views/matchme.html',
@@ -97,6 +104,13 @@ angular
 			.when('/friends', {
 				templateUrl: '/static/app/views/friends.html',
 				controller: 'FriendsCtrl',
+				resolve: {
+					authenticated: function($location, $auth) {
+						if (!$auth.isAuthenticated()) {
+							return $location.path('/login');
+						}
+					}
+				}
 			})
 			.when('/search', {
 				templateUrl: '/static/app/views/about.html',

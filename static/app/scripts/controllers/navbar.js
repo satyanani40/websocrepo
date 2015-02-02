@@ -8,8 +8,11 @@
  * Controller of the weberApp
  */
 angular.module('weberApp')
-	.controller('NavbarCtrl', function($scope, $auth, CurrentUser, $alert, $location) {
+	.controller('NavbarCtrl', function($scope, $auth, CurrentUser, $alert, $location, UserService) {
+
 		$scope.currentUser = CurrentUser;
+		$scope.UserService = UserService;
+
 		$scope.dropdown = [{
 			"text": "Settings",
 			"href": "#/settings"
@@ -25,4 +28,5 @@ angular.module('weberApp')
 		$scope.isAuthenticated = function() {
 			return $auth.isAuthenticated();
 		};
+
 	});

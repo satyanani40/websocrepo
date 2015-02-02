@@ -26,10 +26,16 @@ angular.module('weberApp')
 				var namespace = '/test';
 				var source = new EventSource('/stream');
 				source.onmessage = function (event) {
-     				if(parseInt(event.data)){
-     					console.log(event.data)
+
+					data = JSON.parse(event.data)
+
+					if(parseInt(data.searchNotific)){
      					$scope.searchActivity = new SearchActivity(user);
      				}
+     				if(parseInt(data.friendsnotific)){
+     					$scope.searchActivity = new SearchActivity(user);
+     				}
+
   				};
 			});
 		});

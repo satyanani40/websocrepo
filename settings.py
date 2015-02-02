@@ -67,6 +67,7 @@ posts_schema = {
             'type': 'list',
         },
 
+
     }
 
 searchActivity_schema = {
@@ -199,14 +200,15 @@ people = {
         'phone': {
             'type': 'string',
         },
+
         'notifications': {
             'type': 'dict',
             'schema': {
-                'friend-requests': {
+                'friend_requests': {
                     'type': 'list',
                     'schema': {
                         'type': 'objectid',
-                        'unique': True,
+                        #'unique': True,
                         'data_relation': {
                             'resource': 'people',
                             'embeddable': True

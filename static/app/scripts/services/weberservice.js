@@ -253,6 +253,20 @@ angular.module('weberApp')
 			};
 
 		return MatchMeResults;
+	}).factory('FriendsNotific', function($http, Restangular, $alert, $timeout) {
+
+		var FriendsNotific = function(user_obj) {
+			this.fRequests = [];
+			this.user_obj = user_obj;
+			this.user_obj.getList({
+				seed: Math.random()
+			}).then(function(fNotifications) {
+				console.log(fNotifications);
+			}.bind(this));
+
+		};
+
+		return FriendsNotific;
 	}).factory("TokenRestangular", function (Restangular, StorageService) {
    		 return Restangular.withConfig(function (RestangularConfigurer) {
     		// Set access token in header.
