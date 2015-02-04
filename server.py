@@ -123,8 +123,63 @@ def signup():
 		return jsonify(token=token)
 
 
+import redis
+r = redis.Redis()
+pipe = r.pipeline()
+
+friendsNotific = 0
+searchNotific = 0
+
+def check_updates(userid):
+
+    skey = 'search_'+userid
+    if((r.get(skey)) == 'search_notific'):
+        yield 'data: %s \n\n' % json.dumps({'userid':userid,'searchNotific': 1,'friendsnotifc':0 })
+        r.delete(skey)
+
+    fkey = 'friend_'+userid
+    if((r.get(fkey)) == 'friend_notific'):
+        yield 'data: %s \n\n' % json.dumps({'userid':userid,'searchNotific': 0,'friendsnotifc':1 })
+        r.delete(fkey)
+
+
+
+
+
+
+
+
+@app.route('/stream/<userid>')
+#@nocache
+def stream(userid):
+    return Response(check_updates(userid),mimetype='text/event-stream')
+
+def after_post_inserted(items):
+    for atribute,value in items[0].iteritems():
+        if(atribute == "keywords"):
+            db = WeberDB()
+            lastupdatedRecords =  db.update_search(value,items[0]['_id'])
+            for temp in lastupdatedRecords:
+                for attribute,value in temp.iteritems():
+                    if(attribute == 'author'):
+                        key = 'search_'+str(value)
+                        pipe.set(key,'search_notific')
+            pipe.execute()
+
+def after_friend_notification_get(updates, original):
+    for attrbute,value in original.iteritems():
+        if(attrbute == '_id'):
+            key = 'friend_'+str(value)
+            pipe.set(key,'friend_notific')
+
+app.on_inserted_people_posts+= after_post_inserted
+app.on_updated_people+= after_friend_notification_get
+
+app.run(threaded= True, host='127.0.0.1',port=8000)
+
+
 # server sent events section
-from redis import Redis
+"""from redis import Redis
 redis = Redis()
 pubsub = redis.pubsub()
 
@@ -154,6 +209,8 @@ def mark_friend_requests(userid):
     p.set(user_key,now)
 
 
+
+
 def get_user_last_activity(user_id):
     last_active = redis.get('user-activity/%s' % user_id)
     if last_active is None:
@@ -168,76 +225,4 @@ def get_online_users():
 
 
 def mark_current_user_online(userid):
-    mark_online(userid)
-
-
-friendsNotific = 0
-searchNotific = 0
-
-def check_updates(userid):
-    global pubsub
-    print userid
-    yield 'data: %s \n\n' % json.dumps({'userid':userid,'searchNotific': 'hai' })
-    pubsub.subscribe('chat')
-    for message in pubsub.listen():
-        print '------------------'
-        print message
-        yield 'data: %s \n\n' % userid
-        #yield 'data: %s\n\n' % message['data']
-        return
-
-    #mark_current_user_online(userid)
-    #print '=========online users=========='
-    #print  get_online_users()
-    #print '===========check online========'
-    #print get_user_last_activity(userid)
-
-
-
-    #print userid
-    global friendsNotific, searchNotific
-
-    if(searchNotific):
-        data = json.dumps({'friendsnotific':friendsNotific,'searchNotific':searchNotific})
-        #yield 'data: %s \n\n' % data
-        searchNotific = 0
-    if(friendsNotific):
-        data = json.dumps({'friendsnotific':friendsNotific,'searchNotific':searchNotific})
-        #yield 'data: %s \n\n' % data
-        friendsNotific = 0
-
-@app.route('/stream/<userid>')
-#@nocache
-def stream(userid):
-
-    #yield 'data: %s \n\n' % 'hai'
-
-    return Response(check_updates(userid),mimetype='text/event-stream')
-
-def after_post_inserted(items):
-    for atribute,value in items[0].iteritems():
-        if(atribute == "keywords"):
-            db = WeberDB()
-            isUpdated =  db.update_search(value,items[0]['_id'])
-            if(isUpdated['nModified'] >= 1):
-                global searchNotific
-                searchNotific = 1
-                global pubsub
-                redis.publish('chat', u' %s: %s' % ( 'nani', 'searched one'))
-                #data = json.dumps({'searchnotific':searchNotific,'friendsnotific':friendsNotific})
-                #red.publish('chat', '%s' % (data))
-
-
-def after_friend_notification_get(updates, original):
-    #for attrbute,value in original.iteritems():
-    #    if(attrbute == '_id'):
-    #        print attrbute,'==>',value
-            #mark_friend_requests(value)
-    global friendsNotific
-    friendsNotific = 1
-
-
-app.on_inserted_people_posts+= after_post_inserted
-app.on_updated_people+= after_friend_notification_get
-
-app.run(threaded= True, host='192.168.0.100',port=8000)
+    mark_online(userid)"""
