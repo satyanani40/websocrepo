@@ -1,7 +1,7 @@
 import os
 import jwt, json
 from eve import Eve
-from flask import Flask, make_response, g, request, jsonify, Response
+from flask import Flask, make_response, g, request, jsonify, Response,session
 from eve.auth import TokenAuth
 from datetime import datetime, timedelta
 from functools import wraps
@@ -16,6 +16,7 @@ import flask
 import urllib2, random
 from views import get_search
 from weberdb import WeberDB
+
 
 class TokenAuth(TokenAuth):
 	def check_auth(self, token, allowed_roles, resource, method):
@@ -73,7 +74,7 @@ def index():
 @app.route('/api/me')
 @login_required
 def me():
-	return Response(json.dumps(g.user_id),  mimetype='application/json')
+    return Response(json.dumps(g.user_id),  mimetype='application/json')
 
 @app.route('/foo/<path:filename>')
 def send_foo(filename):
@@ -121,28 +122,97 @@ def signup():
 		token = create_token(user)
 		return jsonify(token=token)
 
+
+# server sent events section
+from redis import Redis
+redis = Redis()
+pubsub = redis.pubsub()
+
+
+import time
+from datetime import datetime
+p = redis.pipeline()
+app.config['ONLINE_LAST_MINUTES'] = 5
+
+
+def mark_online(user_id):
+    global p
+    now = int(time.time())
+    expires = now + (app.config['ONLINE_LAST_MINUTES'] * 60) + 10
+    all_users_key = 'online-users/%d' % (now // 60)
+    user_key = 'user-activity/%s' % user_id
+    p.sadd(all_users_key, user_id)
+    p.set(user_key, now)
+    p.expireat(all_users_key, expires)
+    p.expireat(user_key, expires)
+    p.execute()
+
+def mark_friend_requests(userid):
+    global p
+    now = int(time.time())
+    user_key = 'friend-notific/%s' % userid
+    p.set(user_key,now)
+
+
+def get_user_last_activity(user_id):
+    last_active = redis.get('user-activity/%s' % user_id)
+    if last_active is None:
+        return None
+    return datetime.utcfromtimestamp(int(last_active))
+
+def get_online_users():
+    current = int(time.time()) // 60
+    minutes = xrange(app.config['ONLINE_LAST_MINUTES'])
+    return redis.sunion(['online-users/%d' % (current - x)
+                         for x in minutes])
+
+
+def mark_current_user_online(userid):
+    mark_online(userid)
+
+
 friendsNotific = 0
 searchNotific = 0
 
-def check_updates():
+def check_updates(userid):
+    global pubsub
+    print userid
+    yield 'data: %s \n\n' % json.dumps({'userid':userid,'searchNotific': 'hai' })
+    pubsub.subscribe('chat')
+    for message in pubsub.listen():
+        print '------------------'
+        print message
+        yield 'data: %s \n\n' % userid
+        #yield 'data: %s\n\n' % message['data']
+        return
 
+    #mark_current_user_online(userid)
+    #print '=========online users=========='
+    #print  get_online_users()
+    #print '===========check online========'
+    #print get_user_last_activity(userid)
+
+
+
+    #print userid
     global friendsNotific, searchNotific
 
     if(searchNotific):
-        print 'yessssssss'
         data = json.dumps({'friendsnotific':friendsNotific,'searchNotific':searchNotific})
-        yield 'data: %s \n\n' % data
+        #yield 'data: %s \n\n' % data
         searchNotific = 0
     if(friendsNotific):
-        print 'noooooooooooo'
         data = json.dumps({'friendsnotific':friendsNotific,'searchNotific':searchNotific})
-        yield 'data: %s \n\n' % data
+        #yield 'data: %s \n\n' % data
         friendsNotific = 0
 
-@app.route('/stream')
+@app.route('/stream/<userid>')
 #@nocache
-def stream():
-    return Response(check_updates(),mimetype='text/event-stream')
+def stream(userid):
+
+    #yield 'data: %s \n\n' % 'hai'
+
+    return Response(check_updates(userid),mimetype='text/event-stream')
 
 def after_post_inserted(items):
     for atribute,value in items[0].iteritems():
@@ -152,10 +222,17 @@ def after_post_inserted(items):
             if(isUpdated['nModified'] >= 1):
                 global searchNotific
                 searchNotific = 1
+                global pubsub
+                redis.publish('chat', u' %s: %s' % ( 'nani', 'searched one'))
+                #data = json.dumps({'searchnotific':searchNotific,'friendsnotific':friendsNotific})
+                #red.publish('chat', '%s' % (data))
 
 
 def after_friend_notification_get(updates, original):
-    print 'hhhhhhhhhhhhhhhhhhhhh'
+    #for attrbute,value in original.iteritems():
+    #    if(attrbute == '_id'):
+    #        print attrbute,'==>',value
+            #mark_friend_requests(value)
     global friendsNotific
     friendsNotific = 1
 
@@ -163,4 +240,4 @@ def after_friend_notification_get(updates, original):
 app.on_inserted_people_posts+= after_post_inserted
 app.on_updated_people+= after_friend_notification_get
 
-app.run(host='localhost',port=8000)
+app.run(threaded= True, host='192.168.0.100',port=8000)

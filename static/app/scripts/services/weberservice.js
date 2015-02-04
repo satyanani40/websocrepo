@@ -191,7 +191,6 @@ angular.module('weberApp')
 				sort: '[("_created",-1)]',
 				seed : Math.random()
 			}).then(function(sResult) {
-
 				var param = '{"_id":{"$in":['+combine_ids(sResult[0].matchedPosts)+']}}';
 				var param2 = '{"author":1}';
 				var data2 = Restangular.all("posts").getList({
@@ -272,11 +271,9 @@ angular.module('weberApp')
         restrict: 'A', //This menas that it will be used as an attribute and NOT as an element. I don't like creating custom HTML elements
         replace: true,
         templateUrl: "/static/app/views/navbar.html",
-        controller:function ($scope, $auth, CurrentUser, $alert, $location, UserService,$http,Restangular,SearchActivity) {
-            console.log("called nav bar")
+        controller:function ($scope, $auth, CurrentUser, $alert, $location,$http,Restangular,SearchActivity) {
 
             $scope.currentUser = CurrentUser;
-			$scope.UserService = UserService;
 
 			$scope.dropdown = [{
 				"text": "Settings",
@@ -303,10 +300,10 @@ angular.module('weberApp')
 			}
 		}).success(function(user_id) {
 			Restangular.one('people',JSON.parse(user_id)).get().then(function(user) {
-				$scope.user = user;
+
 				$scope.searchActivity = new SearchActivity(user);
 				var namespace = '/test';
-				var source = new EventSource('/stream');
+				var source = new EventSource('/stream/'+user._id);
 				source.onmessage = function (event) {
 					console.log(event)
 					data = JSON.parse(event.data)
@@ -315,7 +312,7 @@ angular.module('weberApp')
      					$scope.searchActivity = new SearchActivity(user);
      				}
      				if(parseInt(data.friendsnotific)){
-     					$scope.searchActivity = new SearchActivity(user);
+
      				}
 
   				};
