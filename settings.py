@@ -26,7 +26,7 @@ RESOURCE_METHODS = ['GET', 'POST', 'DELETE']
 
 # Enable reads (GET), edits (PATCH) and deletes of individual items
 # (defaults to read-only item access).
-ITEM_METHODS = ['GET', 'PATCH', 'DELETE']
+ITEM_METHODS = ['GET', 'PATCH', 'DELETE','PUT']
 PUBLIC_METHODS = ['GET','PATCH','DELETE','PUT']
 # We enable standard client cache directives for all resources exposed by the
 # API. We can always override these global settings later.
@@ -202,20 +202,24 @@ people = {
         },
 
         'notifications': {
-            'type': 'dict',
+            'type': 'list',
             'schema': {
                 'friend_requests': {
-                    'type': 'list',
+                    'type': 'dict',
                     'schema': {
                         'type': 'objectid',
                         #'unique': True,
                         'data_relation': {
                             'resource': 'people',
                             'embeddable': True
+                        },
+                        'seen': {
+                            'type': 'boolean',
+                            'default': False
                         }
                     }
                 },
-                'updates': {'type': 'string'}
+
             },
         },
         'friends': {

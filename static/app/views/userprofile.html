@@ -7,7 +7,25 @@
 				<h3 style="text-transform: capitalize;">{{user.name.first}} {{user.name.last}}</h3>
 				@{{user.username}}
 					<br>
-					<button ng-click="addFriend()" class="btn btn-primary">Add Friend</button>
+
+                <div ng-switch on="check_relation()">
+                    <div ng-switch-when="unfriend">
+                        <button ng-click="unfriend()" class="btn btn-primary">unfriend</button>
+                    </div>
+                    <div ng-switch-when="cancel_sent">
+                        <button ng-click="cancel_request()" class="btn btn-primary">cancel request</button>
+                    </div>
+                    <div ng-switch-when="reject_accept">
+                        <button ng-click="accept_request()" class="btn btn-primary">accept request</button>
+                        <button ng-click="reject_request()" class="btn btn-primary">reject request</button>
+                    </div>
+                    <div ng-switch-when="addfriend">
+                        <button ng-click="addfriend()" class="btn btn-primary">cancel request</button>
+                    </div>
+
+                    <div class="animate-switch" ng-switch-default>default</div>
+                </div>
+
 			</div>
 		</div>
 		<div class="list-group">

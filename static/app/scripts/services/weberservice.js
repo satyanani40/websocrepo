@@ -253,14 +253,13 @@ angular.module('weberApp')
 
 		return MatchMeResults;
 	}).factory('FriendsNotific', function($http, Restangular, $alert, $timeout) {
-
+            this.fnotifc = []
 		var FriendsNotific = function(user_obj) {
-			this.fRequests = [];
 			this.user_obj = user_obj;
 			this.user_obj.getList({
 				seed: Math.random()
-			}).then(function(fNotifications) {
-				console.log(fNotifications);
+			}).then(function(data) {
+				this.fnotifc.push.apply(this.fnotifc,data);
 			}.bind(this));
 
 		};
@@ -271,11 +270,11 @@ angular.module('weberApp')
         restrict: 'A', //This menas that it will be used as an attribute and NOT as an element. I don't like creating custom HTML elements
         replace: true,
         templateUrl: "/static/app/views/navbar.html",
-        controller:function ($scope, $auth, CurrentUser, $alert, $location,$http,Restangular,SearchActivity) {
+        controller:function ($scope, $auth, CurrentUser, $alert, $location,$http,Restangular,SearchActivity,FriendsNotific) {
 
             $scope.currentUser = CurrentUser;
 
-			$scope.dropdown = [{
+ 			$scope.dropdown = [{
 				"text": "Settings",
 				"href": "#/settings"
 			},{
@@ -302,6 +301,7 @@ angular.module('weberApp')
 			Restangular.one('people',JSON.parse(user_id)).get().then(function(user) {
 
 				$scope.searchActivity = new SearchActivity(user);
+
 				var namespace = '/test';
 				var source = new EventSource('/stream/'+user._id);
 				source.onmessage = function (event) {
@@ -311,7 +311,9 @@ angular.module('weberApp')
 					if(parseInt(data.searchNotific)){
      					$scope.searchActivity = new SearchActivity(user);
      				}
-     				if(parseInt(data.friendsnotific)){
+     				if(parseInt(data.friendsnotifc)){
+     				    $scope.fnotific = new FriendsNotific(user);
+     				    console.log($scope.fnotific)
 
      				}
 
