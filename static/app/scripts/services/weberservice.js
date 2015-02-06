@@ -31,24 +31,43 @@ angular.module('weberApp')
 			return promise;
 		};
 	})
-	.service('CurrentUser', function($http,$auth, Restangular) {
-		this.userId = null;
-		this.reset = function() {
+	.factory('CurrentUser', function($http,$auth, Restangular) {
+
+		var CurrentUser = function() {
+
 			this.userId = null;
-		};
-		if (this.userId === null) {
-			$http.get('/api/me', {
-				headers: {
-					'Content-Type': 'application/json',
-					'Authorization': $auth.getToken()
-				}
-			}).success(function(userId) {
-				this.userId = userId;
-				Restangular.one('people',JSON.parse(userId)).get().then(function(user) {
-					this.user = user;
-				}.bind(this));
-			}.bind(this));
-		}
+            this.user = null;
+
+        };
+			/*this.reset = function() {
+                this.userId = null;
+            };*/
+        CurrentUser.prototype.getCurrentUser = function(){
+
+            var self = this;
+            if (self.userId === null) {
+               var data = $http.get('/api/me', {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': $auth.getToken()
+                    }
+                }).success(function(userId) {
+
+                    self.userId = userId;
+
+                var data = Restangular.one('people',JSON.parse(userId)).get()
+                    .then(function(user) {
+
+                        self.user = user;
+
+                    }.bind(self));
+                 }.bind(self));
+                return data;
+
+            }
+        };
+
+		return CurrentUser;
 	})
 	.service('ESClient', function(esFactory) {
 		return esFactory({
@@ -60,7 +79,7 @@ angular.module('weberApp')
 	.factory('InfinitePosts', function($http, Restangular, $alert, $timeout) {
 		var InfinitePosts = function(user_obj) {
 			this.posts = [];
-			this.user_obj = user_obj;
+			this.user_obj = user_obj; return data2;
 			this.busy = false;
 			this.page = 1;
 			this.end = false;
@@ -161,12 +180,11 @@ angular.module('weberApp')
 		};
 
 		function combine_ids(ids) {
-   				return (ids.length ? "\"" + ids.join("\",\"") + "\"" : "");
-			}
+   			return (ids.length ? "\"" + ids.join("\",\"") + "\"" : "");
+		}
 
+    return SearchActivity;
 
-
-	return SearchActivity;
 	}).factory('MatchMeResults', function($http, Restangular, $alert, $timeout,CurrentUser,$auth) {
 
 		var  MatchMeResults = function() {
@@ -180,7 +198,7 @@ angular.module('weberApp')
 
 		function combine_ids(ids) {
    				return (ids.length ? "\"" + ids.join("\",\"") + "\"" : "");
-			}
+		}
 
 		MatchMeResults.prototype.getMatchedNewResults = function(searchPostId) {
 
@@ -191,8 +209,10 @@ angular.module('weberApp')
 				sort: '[("_created",-1)]',
 				seed : Math.random()
 			}).then(function(sResult) {
+
 				var param = '{"_id":{"$in":['+combine_ids(sResult[0].matchedPosts)+']}}';
 				var param2 = '{"author":1}';
+
 				var data2 = Restangular.all("posts").getList({
 					where: param,
 					embedded: param2,
@@ -202,7 +222,7 @@ angular.module('weberApp')
 					this.mresults.push.apply(this.mresults,data);
 				}.bind(this));
 
-				Restangular.one("searchActivity",searchPostId).patch(
+				RestanggetMatchResultsular.one("searchActivity",searchPostId).patch(
 					{newResults:0},{},
 					{
 						'Content-Type': 'application/json',
@@ -210,18 +230,17 @@ angular.module('weberApp')
 						'Authorization': $auth.getToken()
 					}
 				);
+
 				return data2
-
-
-
-			}.bind(this));
-
-			return data
+            }.bind(this));
+            return data
 		};
 
 		MatchMeResults.prototype.getMatchResults = function(content,keywords) {
+
 			var param1 = '{"$or":[{"keywords": {"$in":['+keywords+']}},{"content":{"$regex":".*'+content+'.*"}}]}';
 			var param2 = '{"author":1}';
+
 			var data = '';
 			var data = Restangular.all('posts').getList({
 				where :param1,
@@ -252,6 +271,8 @@ angular.module('weberApp')
 			};
 
 		return MatchMeResults;
+
+
 	}).factory('FriendsNotific', function($http, Restangular, $alert, $timeout) {
             this.fnotifc = []
 		var FriendsNotific = function(user_obj) {

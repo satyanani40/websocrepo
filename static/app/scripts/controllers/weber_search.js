@@ -13,7 +13,7 @@ angular.module('weberApp')
 	 										CurrentUser, UserService,
 	 										SearchActivity, MatchMeResults) {
 		$scope.UserService = UserService;
-		console.log($scope.UserService)
+		//console.log($scope.UserService)
 
 		/*$http.get('/api/me', {
 			headers: {
@@ -40,30 +40,31 @@ angular.module('weberApp')
   				};
 			});
 		});*/
-
-
 		$scope.searching = function(){
-
-
 
         	function combine_ids(ids) {
    				return (ids.length ? "\"" + ids.join("\",\"") + "\"" : "");
 			}
 
 			var matchResults = new MatchMeResults();
+
 			var params1 = '{"$or":[{"keywords": {"$in":['+(combine_ids($scope.search.split(" ")))+']}},{"content":{"$regex":".*'+$scope.search+'.*"}}]}';
 			var params2 = '{"author":1}';
-			matchResults.getMatchResults($scope.search,combine_ids($scope.search.split(" "))).then(function() {
+
+			matchResults.getMatchResults($scope.search,combine_ids($scope.search.split(" ")))
+			    .then(function() {
+
 					$scope.matchmeresults = matchResults;
 
-       				 if(CurrentUser.userId != 'undefined'){
+       				if(CurrentUser.userId != 'undefined'){
 						$scope.searchActivity.addSearchText($scope.search,matchResults.total_matches,matchResults.matchedids,$scope.search.split(" "));
 					}
    			});
+   			console.log(matchResults)
 
 			matchResults.getMatchPeoples($scope.search).then(function() {
 					$scope.matchmeresults = matchResults;
-					console.log($scope.matchmeresults)
+					//console.log($scope.matchmeresults)
 
 			});
         };
@@ -71,7 +72,7 @@ angular.module('weberApp')
 		$scope.loadNewResullts = function(searchId){
 			var matchResults = new MatchMeResults();
 			matchResults.getMatchedNewResults(searchId).then(function() {
-					console.log(matchResults)
+					//console.log(matchResults)
 					$scope.matchmeresults = matchResults;
 					//console.log($scope.matchmeresults)
 

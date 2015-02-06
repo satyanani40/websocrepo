@@ -8,102 +8,33 @@
  * Controller of the weberApp
  */
 angular.module('weberApp')
-	.controller('UserprofileCtrl', function($scope, $routeParams, Restangular,
-											InfinitePosts, CurrentUser, UserService,FriendsNotific) {
+	.controller('UserprofileCtrl', function($scope, $routeParams,
+	                                        Restangular, InfinitePosts, UserService,
+	                                        CurrentUser, FriendsNotific) {
 
 		$scope.UserService = UserService;
-		var user_obj = Restangular.one('people', $routeParams.username);
 
+		var cuser =  new CurrentUser();
+
+        cuser.getCurrentUser().then(function(){
+            $scope.currentuser = cuser;
+            console.log($scope.currentuser)
+        });
+
+
+
+
+		/*cuser.getCurrentUser().then(function(){
+             $scope.testing = cuser;
+             console.log(cuser)
+        })*/
+
+        /*var user_obj = Restangular.one('people', $routeParams.username);
 		user_obj.get().then(function(user) {
+
+
 			$scope.user = user;
-
-			$scope.unfriend = function() {
-
-                if($scope.user.friends.indexOf($scope.user._id) != -1){
-                    $scope.user.friends.splice($scope.user.friends.indexOf($scope.user._id), 1)
-                    $scope.user.patch({
-                        "friends":$scope.user.friends
-                        })
-                        .then(function(data){
-                            //console.log(data)
-                        });
-                }
-                if(CurrentUser.user.friends.indexOf($scope.user._id) != -1){
-                    CurrentUser.user.friends.splice(CurrentUser.user.friends.indexOf($scope.user._id), 1)
-                    CurrentUser.user.patch({
-                        "friends":CurrentUser.user.friends
-                    }).then(function(data){
-                        //console.log(data)
-                    });
-                }
-            }
-
-            $scope.addfriend = function(){
-                $scope.user.notifications.push({seen:0,friend_requests:CurrentUser.user._id})
-                $scope.user.patch({
-                        "notifications":$scope.user.notifications
-                        })
-                        .then(function(data){
-                            console.log(data)
-                        });
-            }
-            $scope.cancel_request = function(){
-
-                var i
-                for(i = 0; i<(($scope.user.notifications).length);i++){
-
-                    if(($scope.user.notifications[i].friend_requests) == CurrentUser.user._id){
-                        $scope.user.notifications.splice(i,1)
-                        $scope.user.patch({
-                            "notifications":$scope.user.notifications
-                        })
-                        .then(function(data){
-                            console.log(data)
-                        });
-
-                    }
-                }
-            }
-
-            $scope.reject_request = function(){
-                var i
-                for(i = 0; i<((CurrentUser.user.notifications).length);i++){
-
-                    if((CurrentUser.user.notifications[i].friend_requests) == $scope.user._id){
-                        CurrentUser.user.notifications.splice(i,1)
-                        CurrentUser.user.patch({
-                            "notifications":CurrentUser.user.notifications
-                        })
-                        .then(function(data){
-                            console.log(data)
-                        });
-
-                    }
-                }
-            }
-            $scope.accept_request = function(){
-
-                CurrentUser.user.friends.push($scope.user._id)
-                CurrentUser.user.patch({
-                            "friends":CurrentUser.user.friends
-                })
-                .then(function(data){
-                    console.log(data)
-                });
-
-                $scope.user.friends.push(CurrentUser.user._id)
-                $scope.user.patch({
-                    "friends": $scope.user.friends
-                })
-                .then(function(data){
-                    console.log(data)
-                });
-
-            }
-
-
-
-			$scope.check_relation = function(){
+              $scope.check_relation = function(){
 
     		    status = '';
 			    if($scope.user.friends.indexOf(JSON.parse(CurrentUser.userId)) > -1){
@@ -138,8 +69,7 @@ angular.module('weberApp')
             }
 
 
-
-		$scope.infinitePosts = new InfinitePosts(user_obj);
+    	$scope.infinitePosts = new InfinitePosts(user_obj);
 			//get all friends
 			if (user.friends.length !== 0) {
 				Restangular.all('people').getList({
@@ -147,12 +77,24 @@ angular.module('weberApp')
 						"_id": {
 							"$in": $scope.user.friends
 						}
+
+
+
+
+
+
+
+
+
+
 					}
 				}).then(function(friends) {
 					$scope.friends = friends;
 				});
 			}
-		});
+		});*/
 
 
 	});
+
+
