@@ -31,45 +31,35 @@ angular.module('weberApp')
 			return promise;
 		};
 	})
-	.factory('CurrentUser', function($http,$auth, Restangular) {
+    .factory('CurrentUser', function($http,$auth,$q, Restangular) {
 
-		var CurrentUser = function() {
+            var CurrentUser = function() {
 
-			this.userId = null;
-            this.user = null;
-
-        };
-			/*this.reset = function() {
-                this.userId = null;
-            };*/
-        CurrentUser.prototype.getCurrentUser = function(){
-
-            var self = this;
-            if (self.userId === null) {
-               var data = $http.get('/api/me', {
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': $auth.getToken()
-                    }
-                }).success(function(userId) {
-
-                    self.userId = userId;
-
-                var data = Restangular.one('people',JSON.parse(userId)).get()
-                    .then(function(user) {
-
-                        self.user = user;
-
-                    }.bind(self));
-                 }.bind(self));
-                return data;
-
+			    this.userId = null;
+			    this.user = null;
             }
-        };
 
-		return CurrentUser;
-	})
-	.service('ESClient', function(esFactory) {
+            CurrentUser.prototype.getUserId = function(){
+
+                    return $http.get('/api/me', {
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': $auth.getToken()
+                        }
+                    }).success(function(userId) {
+                        this.userId = userId;
+                    }.bind(this));
+            };
+
+
+			CurrentUser.prototype.getCUserDetails = function(userid){
+
+                return Restangular.one('people',JSON.parse(userid)).get();
+            };
+
+            return CurrentUser;
+    })
+    .service('ESClient', function(esFactory) {
 		return esFactory({
 			host: 'http://127.0.0.1:8000',
 			apiVersion: '1.2',
@@ -79,7 +69,7 @@ angular.module('weberApp')
 	.factory('InfinitePosts', function($http, Restangular, $alert, $timeout) {
 		var InfinitePosts = function(user_obj) {
 			this.posts = [];
-			this.user_obj = user_obj; return data2;
+			this.user_obj = user_obj;
 			this.busy = false;
 			this.page = 1;
 			this.end = false;
@@ -222,7 +212,7 @@ angular.module('weberApp')
 					this.mresults.push.apply(this.mresults,data);
 				}.bind(this));
 
-				RestanggetMatchResultsular.one("searchActivity",searchPostId).patch(
+				Restangular.one("searchActivity",searchPostId).patch(
 					{newResults:0},{},
 					{
 						'Content-Type': 'application/json',

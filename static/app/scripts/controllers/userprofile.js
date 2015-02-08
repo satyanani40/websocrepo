@@ -8,93 +8,103 @@
  * Controller of the weberApp
  */
 angular.module('weberApp')
-	.controller('UserprofileCtrl', function($scope, $routeParams,
+	.controller('UserprofileCtrl', function($scope, $routeParams,$templateCache,
 	                                        Restangular, InfinitePosts, UserService,
-	                                        CurrentUser, FriendsNotific) {
+	                                        CurrentUser, FriendsNotific, friendsActivity) {
 
 		$scope.UserService = UserService;
 
-		var cuser =  new CurrentUser();
+        var currentuserobj = new CurrentUser();
 
-        cuser.getCurrentUser().then(function(){
-            $scope.currentuser = cuser;
-            console.log($scope.currentuser)
-        });
+         currentuserobj.getUserId()
+            .then(function(){
 
+                currentuserobj.getCUserDetails(currentuserobj.userId).then(function(user){
 
+                    var user_obj = Restangular.one('people', $routeParams.username);
+		            user_obj.get().then(function(profileuser) {
 
+		                $scope.profileuser = profileuser;
 
-		/*cuser.getCurrentUser().then(function(){
-             $scope.testing = cuser;
-             console.log(cuser)
-        })*/
+                        $scope.currentuser = user;
 
-        /*var user_obj = Restangular.one('people', $routeParams.username);
-		user_obj.get().then(function(user) {
+                        $scope.infinitePosts = new InfinitePosts(user_obj);
+			            //get all friends
+			            if (profileuser.friends.length !== 0) {
 
+                            var params = '{"_id": {"$in":["'+($scope.profileuser.friends).join('", "') + '"'+']}}'
+                            Restangular.all('people').getList({
+                                where:params
+                            }).then(function(friends) {
 
-			$scope.user = user;
-              $scope.check_relation = function(){
+                                $scope.friends = friends;
 
-    		    status = '';
-			    if($scope.user.friends.indexOf(JSON.parse(CurrentUser.userId)) > -1){
-                    status = 'unfriend';
-                    return status;
-                }
+                            });
+			            }
 
-                if(status == ''){
-                    var k = ''
-                    for (k in $scope.user.notifications){
-                        if($scope.user.notifications[k].friend_requests == JSON.parse(CurrentUser.userId)){
-                        status = 'cancel_sent'
-                        return status
+                        var friendsactivity = new friendsActivity($scope.currentuser, $scope.profileuser)
+                        console.log(friendsactivity)
+                        $scope.check_relation = function(){
+                            $scope.relation = friendsactivity.getRelation();
+                            return $scope.relation;
                         }
-                    }
-                }
 
-                if(status == ''){
-                    var k = ''
-                    for (k in CurrentUser.user.notifications){
-                        if(CurrentUser.user.notifications[k].friend_requests == JSON.parse($scope.user._id)){
-                            status = 'reject_accept'
-                        return status
+                        $scope.AddFriend = function(){
+
+
+
+
+                            var user_obj = Restangular.one('people', $routeParams.username);
+
+		                    user_obj.get().then(function(profileuser) {
+                                $scope.profileuser = profileuser;
+                                friendsactivity = new friendsActivity($scope.currentuser, $scope.profileuser)
+                                $scope.temps = friendsactivity.AddFriend();
+
+                                $scope.temps.then(function(data){
+
+                                    $scope.profileuser._etag = data._etag;
+                                    console.log(data)
+                                });
+                            });
                         }
-                    }
-                }
-
-                if(status == ''){
-                    status = 'addfriend'
-                    return status
-                }
-            }
 
 
-    	$scope.infinitePosts = new InfinitePosts(user_obj);
-			//get all friends
-			if (user.friends.length !== 0) {
-				Restangular.all('people').getList({
-					where: {
-						"_id": {
-							"$in": $scope.user.friends
-						}
+                        $scope.cancelrequest = function(){
 
+                            var user_obj = Restangular.one('people', $routeParams.username);
 
+		                    user_obj.get().then(function(profileuser) {
 
+                                $scope.profileuser = profileuser;
 
+                                friendsactivity = new friendsActivity($scope.currentuser, $scope.profileuser)
 
+                                $scope.cr = friendsactivity.cancelrequest();
+                                console.log($scope.cr)
+                                $scope.cr.then(function(data){
+                                    console.log(data)
 
+                                });
+                            });
+                        }
 
-
-
-
-					}
-				}).then(function(friends) {
-					$scope.friends = friends;
-				});
-			}
-		});*/
+                    });
+                });
+           });
 
 
 	});
+/*usefull may be in futhure
+
+
+    scope.paramsObj = {
+         fields: '*',
+         limit: 10,
+         offset: 0,
+         filter: 'parameter in (5,15)'
+    }
+*/
+
 
 
