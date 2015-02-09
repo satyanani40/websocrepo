@@ -1,5 +1,6 @@
 <div  class="navbar navbar-inverse navbar-fixed-top" role="navigation" bs-navbar>
         <div class="container" style="width:;">
+
             <div class="navbar-header">
                 <a class="navbar-brand" href="/#/" ng-if="isAuthenticated()">
                     <span class="glyphicon glyphicon-film"></span>
@@ -30,7 +31,7 @@
                     <li><a href="#/friends">Friends</a></li>
                     <li>
                         <a href="" bs-dropdown="dropdown" style="padding-top: 11px; padding-bottom: 11px;">
-                            <img style="width:28px; border: 2px solid; margin-right: 5px;" class="img-circle" src="{{currentUser.user.picture.thumbnail}}" alt="">{{currentUser.user.username}} <span class="caret"></span>
+                            <img style="width:28px; border: 2px solid; margin-right: 5px;" class="img-circle" src="{{currentUser.picture.thumbnail}}" alt="">{{currentUser.username}} <span class="caret"></span>
                         </a>
                     </li>
                 </ul>

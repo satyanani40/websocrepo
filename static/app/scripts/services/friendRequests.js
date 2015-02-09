@@ -26,10 +26,6 @@ angular.module('weberApp')
 
         friendsActivity.prototype.getRelation = function(){
 
-                //console.log(this.profileuser.friends)
-			    //console.log(this.currentuser._id)
-
-
                 if(this.status === null){
 
                     if(this.profileuser.friends.indexOf(this.currentuser._id) > -1){
@@ -90,9 +86,107 @@ angular.module('weberApp')
                 }
             return data;
 
+        }
 
+        friendsActivity.prototype.unfriend = function(){
+
+            var k = null;
+
+                for (k in this.profileuser.friends){
+
+                    if(this.profileuser.friends[k] == (this.currentuser._id)){
+                        this.profileuser.friends.splice(this.profileuser.friends.indexOf(this.currentuser._id),1)
+                        this.profileuser.patch({
+                           'friends': this.profileuser.friends
+                        }).then(function(response){
+                            console.log("deleted at profile friend")
+                            console.log(response)
+
+
+                        })
+
+                    }
+                }
+
+            k = null;
+
+            for(k in this.currentuser.friends){
+                if(this.currentuser.friends[k] ==(this.profileuser._id)){
+                    this.currentuser.friends.splice(this.currentuser.friends.indexOf(this.profileuser._id),1);
+                    this.currentuser.patch({
+                        'friends': this.currentuser.friends
+                    }).then(function(response){
+                        console.log("deleted at current friend")
+                        console.log(response)
+
+
+                    });
+                }
+            }
+        }
+
+        friendsActivity.prototype.reject_request = function(){
+            var k = null;
+            var data = null;
+                for (k in this.currentuser.notifications){
+                    if(this.currentuser.notifications[k].friend_id == (this.profileuser._id)){
+                        this.currentuser.notifications.splice(this.currentuser.notifications.indexOf(this.profileuser._id),1)
+                        data = this.currentuser.patch({
+                           'notifications': this.currentuser.notifications
+                        });
+
+                    }
+                }
+            return data;
 
         }
 
-        return friendsActivity
+
+
+        friendsActivity.prototype.accept_request = function(){
+
+            var k = null;
+
+            if(this.profileuser.friends.indexOf(this.currentuser._id) == -1){
+                this.profileuser.friends.push(this.currentuser._id)
+                this.profileuser.patch({
+                   'friends': this.profileuser.friends
+                }).then(function(response){
+                    console.log("added to profile user")
+                    console.log(response)
+
+
+                })
+            }
+
+            k = null;
+
+
+            if(this.currentuser.friends.indexOf(this.profileuser._id) == -1){
+
+                this.currentuser.friends.push(this.profileuser._id)
+
+                this.currentuser.patch({
+                    'friends': this.currentuser.friends
+                }).then(function(response){
+                    console.log("added to current user")
+                    console.log(response)
+
+
+                });
+            }
+
+             k = null;
+
+            for (k in this.currentuser.notifications){
+                    if(this.currentuser.notifications[k].friend_id == (this.profileuser._id)){
+                        this.currentuser.notifications.splice(this.currentuser.notifications.indexOf(this.profileuser._id),1)
+                        data = this.currentuser.patch({
+                           'notifications': this.currentuser.notifications
+                        });
+
+                    }
+            }
+        }
+         return friendsActivity
 	});

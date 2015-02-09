@@ -283,7 +283,15 @@ angular.module('weberApp')
         templateUrl: "/static/app/views/navbar.html",
         controller:function ($scope, $auth, CurrentUser, $alert, $location,$http,Restangular,SearchActivity,FriendsNotific) {
 
-            $scope.currentUser = CurrentUser;
+            //$scope.currentUser = CurrentUser;
+            var currentuserobj = new CurrentUser();
+            currentuserobj.getUserId()
+                .then(function(){
+                    currentuserobj.getCUserDetails(currentuserobj.userId).then(function(user){
+                    $scope.currentUser = user;
+
+                });
+            });
 
  			$scope.dropdown = [{
 				"text": "Settings",
@@ -292,11 +300,13 @@ angular.module('weberApp')
 				"text": "Logout",
 				"click": "logout()"
 			}];
+
 			$scope.logout = function() {
-				CurrentUser.reset();
+				//CurrentUser.reset();
 				$auth.logout();
 				$location.path("/login");
 			};
+
 			$scope.isAuthenticated = function() {
 				return $auth.isAuthenticated();
 			};
