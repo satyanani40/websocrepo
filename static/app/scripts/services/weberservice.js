@@ -268,17 +268,8 @@ angular.module('weberApp')
         restrict: 'A', //This menas that it will be used as an attribute and NOT as an element. I don't like creating custom HTML elements
         replace: true,
         templateUrl: "/static/app/views/navbar.html",
-        controller:function ($scope, $auth, CurrentUser, $alert, $location,$http,Restangular,SearchActivity,FriendsNotific) {
+        controller:function ($scope, $auth, CurrentUser, $alert, $location,$http,Restangular,SearchActivity,FriendsNotific,friendsActivity) {
 
-            //$scope.currentUser = CurrentUser;
-            var currentuserobj = new CurrentUser();
-            currentuserobj.getUserId()
-                .then(function(){
-                    currentuserobj.getCUserDetails(currentuserobj.userId).then(function(user){
-                    $scope.currentUser = user;
-
-                });
-            });
 
  			$scope.dropdown = [{
 				"text": "Settings",
@@ -306,64 +297,117 @@ angular.module('weberApp')
 				'Authorization': $auth.getToken()
 			}
 		}).success(function(user_id) {
+
 			Restangular.one('people',JSON.parse(user_id)).get().then(function(user) {
 
+				$scope.currentUser = user;
 				$scope.searchActivity = new SearchActivity(user);
-                var requested_peoples = [];
-				var namespace = '/test';
+				var requested_peoples = [];
+
+				function get_friend_notifications(currentUser){
+
+					var notific = new FriendsNotific(currentUser);
+					notific.then(function(data){
+
+						var currentuser = data
+						var k = null;
+						for (k in currentuser.notifications){
+
+							if(currentuser.notifications[k].seen == false){
+								requested_peoples.push(currentuser.notifications[k].friend_id)
+
+							}
+						}
+
+						if(requested_peoples.length > 0){
+							$scope.newnotific = requested_peoples.length
+							console.log(requested_peoples.length)
+							console.log(requested_peoples)
+						}else{
+
+							$scope.newnotific = null;
+						}
+
+					});
+				}
+
+			function checkinrequests(id){
+
+				var k = null;
+				var returnvalue = false;
+				console.log(user)
+            		for (k in user.notifications){
+
+						if(user.notifications[k].friend_id == id){
+							returnvalue = true;
+						}
+					}
+
+				return returnvalue;
+
+			}
+
+			get_friend_notifications(user);
+
 				var source = new EventSource('/stream/'+user._id);
 				source.onmessage = function (event) {
-					console.log(event)
+
 					data = JSON.parse(event.data)
 
 					if(parseInt(data.searchNotific)){
      					$scope.searchActivity = new SearchActivity(user);
      				}
+
      				if(parseInt(data.friendsnotifc)){
-
-     				    var notific = new FriendsNotific(user);
-
-                        var currentuser = notific.user_obj
-                        console.log("====currentuser===")
-                        console.log(currentuser)
-                        var k = null;
-
-
-                            for (k in currentuser.notifications){
-
-                                if(currentuser.notifications[k].seen == false){
-                                    requested_peoples.push(currentuser.notifications[k].friend_id)
-
-                                }
-                            }
-                            console.log("========new notifications==========")
-
-                            if(requested_peoples.length > 0){
-                                $scope.newnotific = requested_peoples.length
-                                console.log(requested_peoples.length)
-                                console.log(requested_peoples)
-                            }else{
-
-                                $scope.newnotific = null;
-                            }
-
-
-
-
-
+						get_friend_notifications(user);
 
      				}
 
-  				};
+				};
+
   				$scope.getNewNotifcations = function(){
-  				    var notific = new FriendsNotific(user);
-  				    console.log(notific)
-  				    /*notific.then(function(data){
 
-  				        console.log(data)
+					if(requested_peoples.length != 0){
+						var params = '{"_id": {"$in":["'+(requested_peoples).join('", "') + '"'+']}}'
+						Restangular.all('people').getList({
+							where : params
+						}).then(function(resposne){
+							$scope.requestedPeoples = resposne;
+						});
+					}else{
+						//$scope.requestedPeoples.push('no new requests found');
 
-  				    });*/
-  				    //notific.getRequestedPeoples(requested_peoples);
+					}
+
+  				}
+  				$scope.confirmrequest = function(id){
+  					console.log("hai")
+
+  					//var isInRequests = checkinrequests(id)
+
+  				$http.get('/api/me', {
+					headers: {
+						'Content-Type': 'application/json',
+						'Authorization': $auth.getToken()
+					}
+				}).success(function(user_id) {
+
+					Restangular.one('people',JSON.parse(user_id)).get().then(function(user) {
+
+  						var isInRequests = true;
+						if(isInRequests){
+							Restangular.one('people',id).get().then(function(profileuser){
+								var friendsactivity = new friendsActivity(user,profileuser)
+								$scope.acceptfrnd = friendsactivity.accept_request();
+
+							});
+						}
+						else{
+							console.log('not in notifications')
+						}
+
+					});
+				});
 
 
   				}
