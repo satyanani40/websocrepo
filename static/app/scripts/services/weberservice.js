@@ -331,12 +331,46 @@ angular.module('weberApp')
      					$scope.searchActivity = new SearchActivity(user);
      				}
      				if(parseInt(data.friendsnotifc)){
-     				    $scope.fnotific = new FriendsNotific(user);
-     				    console.log($scope.fnotific)
+
+     				    var notific = new FriendsNotific(user);
+     				    notific.then(function(currentuser){
+
+     				        var k = null;
+                            var requested_peoples = [];
+
+                                for (k in currentuser.notifications){
+
+                                    if(currentuser.notifications[k].seen == false){
+                                        requested_peoples.push(currentuser.notifications[k].friend_id)
+
+                                    }
+                                }
+                                console.log("========new notifications==========")
+                                if(requested_peoples.length > 0){
+                                    $scope.newnotific = requested_peoples.length
+                                    console.log(requested_peoples.length)
+                                    console.log(requested_peoples)
+                                }else{
+
+                                    $scope.newnotific = null;
+                                }
+
+
+
+
+     				    });
 
      				}
 
   				};
+  				$scope.getNewNotifcations = function(){
+  				    notific = new FriendsNotific(user);
+  				    var requestedPeopledata = notific.getRequestedPeoples(requested_peoples);
+
+
+  				}
+
+
 			});
 		});
 

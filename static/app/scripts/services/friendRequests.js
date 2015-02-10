@@ -188,5 +188,6 @@ angular.module('weberApp')
                     }
             }
         }
+
          return friendsActivity
 	});
