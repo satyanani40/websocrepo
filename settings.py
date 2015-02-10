@@ -222,6 +222,27 @@ people = {
 
             },
         },
+        'accept_notifications': {
+            'type': 'list',
+            'schema': {
+                'accepted_id': {
+                    'type': 'dict',
+                    'schema': {
+                        'type': 'objectid',
+                        #'unique': True,
+                        'data_relation': {
+                            'resource': 'people',
+                            'embeddable': True
+                        },
+                        'seen': {
+                            'type': 'boolean',
+                            'default': False
+                        }
+                    }
+                },
+
+            },
+        },
         'friends': {
             'type': 'list',
             'schema': {

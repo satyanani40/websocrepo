@@ -154,9 +154,21 @@ angular.module('weberApp')
                    'friends': this.profileuser.friends
                 }).then(function(response){
 
+                    var new_request = {'accepted_id':this.currentuser._id,'seen':false}
+
+                    self.profileuser.notifications.push(new_request);
+
+                    Restangular.one('people',self.profileuser._id).patch({
+                        'notifications':self.profileuser.notifications
+                    },{},{'If-Match':response._etag});
+
+
+
+
                      k = null;
 
-                    console.log("=======current user------------")
+                    console.log("=======previous etag current user ------------")
+                    console.log(self.currentuser._etag)
 
                     if(self.currentuser.friends.indexOf(self.profileuser._id) == -1){
 
@@ -173,12 +185,16 @@ angular.module('weberApp')
 
                             k = null;
 
-                            for (k in this.currentuser.notifications){
-                                    if(this.currentuser.notifications[k].friend_id == (this.profileuser._id)){
-                                        this.currentuser.notifications.splice(this.currentuser.notifications.indexOf(this.profileuser._id),1)
-                                        data = this.currentuser.patch({
-                                           'notifications': this.currentuser.notifications
-                                        });
+                            self.currentuser._etag = response._etag;
+
+                            for (k in self.currentuser.notifications){
+                                    if(self.currentuser.notifications[k].friend_id == (self.profileuser._id)){
+                                        self.currentuser.notifications.splice(self.currentuser.notifications.indexOf(self.profileuser._id),1)
+                                        console.log("===================current user notifications===========")
+                                        console.log(self.currentuser._etag)
+                                        data = Restangular.one('people',self.currentuser._id).patch({
+                                           'notifications': self.currentuser.notifications
+                                        },{},{'If-Match':response._etag});
 
                                     }
                             }
