@@ -263,17 +263,6 @@ angular.module('weberApp')
 		return MatchMeResults;
 
 
-	}).factory('FriendsNotific', function($http, Restangular, $alert, $timeout) {
-
-		var FriendsNotific = function(user_obj) {
-
-			this.user_obj = user_obj;
-			return this.user_obj.get({
-				seed: Math.random()
-			});
-		};
-
-		return FriendsNotific;
 	}).directive('navbar', function () {
     return {
         restrict: 'A', //This menas that it will be used as an attribute and NOT as an element. I don't like creating custom HTML elements
@@ -320,7 +309,7 @@ angular.module('weberApp')
 			Restangular.one('people',JSON.parse(user_id)).get().then(function(user) {
 
 				$scope.searchActivity = new SearchActivity(user);
-
+                var requested_peoples = [];
 				var namespace = '/test';
 				var source = new EventSource('/stream/'+user._id);
 				source.onmessage = function (event) {
@@ -333,39 +322,48 @@ angular.module('weberApp')
      				if(parseInt(data.friendsnotifc)){
 
      				    var notific = new FriendsNotific(user);
-     				    notific.then(function(currentuser){
 
-     				        var k = null;
-                            var requested_peoples = [];
+                        var currentuser = notific.user_obj
+                        console.log("====currentuser===")
+                        console.log(currentuser)
+                        var k = null;
 
-                                for (k in currentuser.notifications){
 
-                                    if(currentuser.notifications[k].seen == false){
-                                        requested_peoples.push(currentuser.notifications[k].friend_id)
+                            for (k in currentuser.notifications){
 
-                                    }
+                                if(currentuser.notifications[k].seen == false){
+                                    requested_peoples.push(currentuser.notifications[k].friend_id)
+
                                 }
-                                console.log("========new notifications==========")
-                                if(requested_peoples.length > 0){
-                                    $scope.newnotific = requested_peoples.length
-                                    console.log(requested_peoples.length)
-                                    console.log(requested_peoples)
-                                }else{
+                            }
+                            console.log("========new notifications==========")
 
-                                    $scope.newnotific = null;
-                                }
+                            if(requested_peoples.length > 0){
+                                $scope.newnotific = requested_peoples.length
+                                console.log(requested_peoples.length)
+                                console.log(requested_peoples)
+                            }else{
+
+                                $scope.newnotific = null;
+                            }
 
 
 
 
-     				    });
+
 
      				}
 
   				};
   				$scope.getNewNotifcations = function(){
-  				    notific = new FriendsNotific(user);
-  				    var requestedPeopledata = notific.getRequestedPeoples(requested_peoples);
+  				    var notific = new FriendsNotific(user);
+  				    console.log(notific)
+  				    /*notific.then(function(data){
+
+  				        console.log(data)
+
+  				    });*/
+  				    //notific.getRequestedPeoples(requested_peoples);
 
 
   				}

@@ -23,7 +23,7 @@ angular.module('weberApp')
 
 				var params = '{"_id": {"$in":["'+($scope.user.friends).join('", "') + '"'+']}}'
 
-				console.log(params)
+				//console.log(params)
 				if (user.friends.length !== 0) {
 					Restangular.all('people').getList({where :params}).then(function(friend) {
 						$scope.friends = friend;
