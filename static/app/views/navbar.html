@@ -9,14 +9,17 @@
             </div>
             <div class="navbar-collapse collapse">
                 <div class="col-sm-6" ng-controller="InstantsearchCtrl">
-                    <form class="navbar-form" role="search" ng-if="isAuthenticated()">
-                        <div class="input-group col-sm-12 input-block">
-                            <input type="text" class="form-control" placeholder="Search" name="q" ng-model="search">
-                            <div class="input-group-btn">
-                                <button class="btn btn-default" type="submit" ng-click="searchSubmit()"><i class="glyphicon glyphicon-search"></i>
-                                </button>
-                            </div>
-                        </div>
+                    <form role="form" style="margin-top: 8px;">
+                        <div class="row">
+                            <div class="col-xs-12">
+                                <div class="input-group input-group-md">
+                                    <input type="text" class="form-control" placeholder="Search Friends or anything in weber" />
+                                    <div class="input-group-btn">
+                                        <button type="submit" class="btn">Search</button>
+                                    </div><!-- /btn-group -->
+                                </div><!-- /input-group -->
+                            </div><!-- /.col-xs-12 -->
+                        </div><!-- /.row -->
                     </form>
                 </div>
                 <ul class="nav navbar-nav pull-right" ng-if="!isAuthenticated()">
@@ -26,9 +29,97 @@
                     </li>
                 </ul>
                 <ul class="nav navbar-nav navbar-right" ng-if="isAuthenticated()">
-                    <li class="active"><a href="#/">Home</a></li>
+
                     <li><a href="#/weber_search">Match Me</a></li>
                     <li><a href="#/friends">Friends</a></li>
+                    <li class="dropdown">
+
+                        <a id="dLabel" role="button"
+                           data-toggle="dropdown" class=""
+                           data-target="#" href="/page.html" style="padding-bottom: 12px;">
+                            <i class="glyphicon glyphicon-globe" style="font-size:18px;opacity:0.70"></i>
+                            <div class="label label-danger" style="padding: 1px 4px 2px 4px;position:absolute;color:#fff;top: 6px;left: 28px;font-size: 15px;font-weight: 600;">
+                                1
+                            </div>
+                        </a>
+                        <div class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu" style="width:500px">
+                            <div class="jumbotron" style="background:#fff;padding:10px 10px 10px 10px;margin-bottom:0px">
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="panel panel-body" style="padding:0px 0px 5px 0px">
+                                            <div class="col-sm-2">
+                                                <a href="#/profile/{{UserService.get(post.author)._id}}">
+                                                    <img src="http://api.randomuser.me/portraits/men/97.jpg"
+                                                         style="border-radius:2px;width:60px">
+                                                </a>
+                                            </div>
+                                            <div class="col-sm-7" style="padding-left:0px">
+
+                                                <h5>
+                                                    <a href="">
+                                                        Surya Chowdary Muppalla
+                                                    </a>
+                                                </h5>
+                                                <h6 style="opacity:0.65">
+                                                    Friends with
+                                                    <a href="" style="color:#444">
+                                                        <strong>
+                                                            Vegeshna Satya
+                                                        </strong>
+                                                    </a>
+                                                </h6>
+
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <h6>
+                                                    <button class="btn btn-sm btn-default pull-right" style="">
+                                                        Confirm Friend
+                                                    </button>
+                                                </h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-sm-12">
+                                        <div class="panel panel-body" style="padding:0px 0px 5px 0px">
+                                            <div class="col-sm-2">
+                                                <a href="#/profile/{{UserService.get(post.author)._id}}">
+                                                    <img src="http://api.randomuser.me/portraits/women/5.jpg"
+                                                         style="border-radius:2px;width:60px">
+                                                </a>
+                                            </div>
+                                            <div class="col-sm-7" style="padding-left:0px">
+
+                                                <h5>
+                                                    <a href="">
+                                                        Vegeshna Satyanarayana
+                                                    </a>
+                                                </h5>
+                                                <h6 style="opacity:0.65">
+                                                    Friends with
+                                                    <a href="" style="color:#444;opacity:0.90">
+                                                        <strong>
+                                                            Surya Chowdary Muppalla
+                                                        </strong>
+                                                    </a>
+                                                </h6>
+
+                                            </div>
+                                            <div class="col-sm-3">
+                                                <h6>
+                                                    <button class="btn btn-sm btn-default pull-right" style="">
+                                                        Confirm Friend
+                                                    </button>
+                                                </h6>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </li>
                     <li>
                         <a href="" bs-dropdown="dropdown" style="padding-top: 11px; padding-bottom: 11px;">
                             <img style="width:28px; border: 2px solid; margin-right: 5px;" class="img-circle" src="{{currentUser.picture.thumbnail}}" alt="">{{currentUser.username}} <span class="caret"></span>

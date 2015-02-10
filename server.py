@@ -171,7 +171,7 @@ def after_friend_notification_get(updates, original):
 app.on_inserted_people_posts+= after_post_inserted
 app.on_updated_people+= after_friend_notification_get
 
-app.run(threaded= True, host='192.168.0.101',port=8000)
+app.run(threaded= True, host='127.0.0.1',port=8000)
 
 
 # server sent events section
