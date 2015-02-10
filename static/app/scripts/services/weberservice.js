@@ -264,15 +264,13 @@ angular.module('weberApp')
 
 
 	}).factory('FriendsNotific', function($http, Restangular, $alert, $timeout) {
-            this.fnotifc = []
-		var FriendsNotific = function(user_obj) {
-			this.user_obj = user_obj;
-			this.user_obj.getList({
-				seed: Math.random()
-			}).then(function(data) {
-				this.fnotifc.push.apply(this.fnotifc,data);
-			}.bind(this));
 
+		var FriendsNotific = function(user_obj) {
+
+			this.user_obj = user_obj;
+			return this.user_obj.get({
+				seed: Math.random()
+			});
 		};
 
 		return FriendsNotific;
