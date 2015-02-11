@@ -57,13 +57,15 @@ angular.module('weberApp')
                             var user_obj = Restangular.one('people', $routeParams.username);
 
 		                    user_obj.get().then(function(profileuser) {
+
                                 $scope.profileuser = profileuser;
+
                                 friendsactivity = new friendsActivity($scope.currentuser, $scope.profileuser)
                                 $scope.temps = friendsactivity.AddFriend();
 
                                 $scope.temps.then(function(data){
 
-                                    $scope.profileuser._etag = data._etag;
+                                    //$scope.profileuser._etag = data._etag;
                                     console.log(data)
                                 });
                             });
@@ -98,7 +100,7 @@ angular.module('weberApp')
                                 currentuserobj.getCUserDetails(currentuserobj.userId).then(function(user){
 
                                     var user_obj = Restangular.one('people', $routeParams.username);
-                                    user_obj.get().then(function(profileuser) {
+                                    user_obj.get({seed: Math.random()}).then(function(profileuser) {
 
                                         $scope.profileuser = profileuser;
                                         $scope.currentuser = user;

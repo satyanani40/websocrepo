@@ -66,7 +66,11 @@ angular.module('weberApp')
             this.profileuser.notifications.push(new_request);
 
             var data = this.profileuser.patch({
-                'notifications':this.profileuser.notifications
+                'notifications':this.profileuser.notifications,
+                'notifications':{
+                        'all_seen':false
+
+                }
             });
             return data;
 
@@ -149,28 +153,37 @@ angular.module('weberApp')
             var self = this;
 
             if(this.profileuser.friends.indexOf(this.currentuser._id) == -1){
+
                 this.profileuser.friends.push(this.currentuser._id)
+
                 this.profileuser.patch({
                    'friends': this.profileuser.friends
                 }).then(function(response){
+                    console.log("========profile userid =========")
+                    console.log(self.profileuser._id)
 
-                    var new_request = {'accepted_id':this.currentuser._id,'seen':false}
-
-                    self.profileuser.notifications.push(new_request);
-
-                    Restangular.one('people',self.profileuser._id).patch({
-                        'notifications':self.profileuser.notifications
-                    },{},{'If-Match':response._etag});
+                        console.log(self.profileuser.accept_notifications)
 
 
+                        var new_request = {'accepted_id':self.currentuser._id,'seen':false}
+
+                        self.profileuser.accept_notifications.push(new_request);
+
+                        Restangular.one('people',self.profileuser._id).patch({
+                            'accept_notifications':self.profileuser.accept_notifications
+                        },{},{'If-Match':response._etag});
 
 
                      k = null;
 
-                    console.log("=======previous etag current user ------------")
-                    console.log(self.currentuser._etag)
+                    console.log("added to profile user")
+                    console.log(response)
 
-                    if(self.currentuser.friends.indexOf(self.profileuser._id) == -1){
+
+                })
+            }
+
+             if(self.currentuser.friends.indexOf(self.profileuser._id) == -1){
 
 
                         self.currentuser.friends.push(self.profileuser._id)
@@ -201,18 +214,8 @@ angular.module('weberApp')
 
 
                         });
-                    }
+             }
 
-                    console.log("added to profile user")
-                    console.log(response)
-
-
-                })
-            }
-
-
-
-             /**/
         }
 
          return friendsActivity

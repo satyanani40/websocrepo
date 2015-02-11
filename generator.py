@@ -21,7 +21,9 @@ for raw_user in users:
 		user.pop('version')
 		user.pop('SSN')
 		user['born'] = user.pop('dob')
-		user['password_test']  = user['password'] 
+		user['password_test']  = user['password']
+		user['notifications'] = []
+		user['accept_notifications'] = []
 		user['password'] = generate_password_hash(user['password'])
 		user['role'] = 'test'
 		r = requests.post(url, data=json.dumps(user), headers=headers)

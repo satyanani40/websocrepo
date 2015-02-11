@@ -298,11 +298,12 @@ angular.module('weberApp')
 			}
 		}).success(function(user_id) {
 
-			Restangular.one('people',JSON.parse(user_id)).get().then(function(user) {
+			Restangular.one('people',JSON.parse(user_id)).get({seed: Math.random()}).then(function(user) {
 
 				$scope.currentUser = user;
 				$scope.searchActivity = new SearchActivity(user);
 				var requested_peoples = [];
+				var accepted_peoples = [];
 
 				function get_friend_notifications(currentUser){
 
@@ -311,6 +312,7 @@ angular.module('weberApp')
 
 						var currentuser = data
 						var k = null;
+
 						for (k in currentuser.notifications){
 
 							if(currentuser.notifications[k].seen == false){
@@ -319,10 +321,19 @@ angular.module('weberApp')
 							}
 						}
 
-						if(requested_peoples.length > 0){
-							$scope.newnotific = requested_peoples.length
-							console.log(requested_peoples.length)
-							console.log(requested_peoples)
+						k= null;
+
+						for (k in currentuser.accept_notifications){
+
+							if(currentuser.accept_notifications[k].seen == false){
+								accepted_peoples.push(currentuser.accept_notifications[k].accepted_id)
+
+							}
+						}
+
+						if(requested_peoples.length+accepted_peoples.length > 0){
+							$scope.newnotific = requested_peoples.length+accepted_peoples.length
+
 						}else{
 
 							$scope.newnotific = null;
@@ -370,9 +381,26 @@ angular.module('weberApp')
 					if(requested_peoples.length != 0){
 						var params = '{"_id": {"$in":["'+(requested_peoples).join('", "') + '"'+']}}'
 						Restangular.all('people').getList({
-							where : params
+							where : params,
+							seed: Math.random()
 						}).then(function(resposne){
 							$scope.requestedPeoples = resposne;
+						});
+					}else{
+						//$scope.requestedPeoples.push('no new requests found');
+
+					}
+
+
+					console.log("===========accepted people===========")
+					console.log(accepted_peoples)
+					if(accepted_peoples.length != 0){
+						var params = '{"_id": {"$in":["'+(accepted_peoples).join('", "') + '"'+']}}'
+						Restangular.all('people').getList({
+							where : params,
+							seed: Math.random()
+						}).then(function(resposne){
+							$scope.accepted_peoples = resposne;
 						});
 					}else{
 						//$scope.requestedPeoples.push('no new requests found');
@@ -385,29 +413,30 @@ angular.module('weberApp')
 
   					//var isInRequests = checkinrequests(id)
 
-  				$http.get('/api/me', {
-					headers: {
-						'Content-Type': 'application/json',
-						'Authorization': $auth.getToken()
-					}
-				}).success(function(user_id) {
-
-					Restangular.one('people',JSON.parse(user_id)).get().then(function(user) {
-
-  						var isInRequests = true;
-						if(isInRequests){
-							Restangular.one('people',id).get().then(function(profileuser){
-								var friendsactivity = new friendsActivity(user,profileuser)
-								$scope.acceptfrnd = friendsactivity.accept_request();
-
-							});
+					$http.get('/api/me', {
+						headers: {
+							'Content-Type': 'application/json',
+							'Authorization': $auth.getToken()
 						}
-						else{
-							console.log('not in notifications')
-						}
+					}).success(function(user_id) {
 
+						Restangular.one('people',JSON.parse(user_id)).get({seed: Math.random()}).then(function(user) {
+
+							var isInRequests = true;
+							if(isInRequests){
+								Restangular.one('people',id).get({seed: Math.random()}).then(function(profileuser){
+									var friendsactivity = new friendsActivity(user,profileuser)
+									console.log('comes to add friend')
+									$scope.acceptfrnd = friendsactivity.accept_request();
+
+								});
+							}
+							else{
+								console.log('not in notifications')
+							}
+
+						});
 					});
-				});
 
 
   				}
