@@ -290,15 +290,14 @@ angular.module('weberApp')
 			};
 
 
-
 			$http.get('/api/me', {
-			headers: {
-				'Content-Type': 'application/json',
-				'Authorization': $auth.getToken()
-			}
-		}).success(function(user_id) {
+				headers: {
+					'Content-Type': 'application/json',
+					'Authorization': $auth.getToken()
+				}
+			}).success(function(user_id) {
 
-			Restangular.one('people',JSON.parse(user_id)).get({seed: Math.random()}).then(function(user) {
+				Restangular.one('people',JSON.parse(user_id)).get({seed: Math.random()}).then(function(user) {
 
 				$scope.currentUser = user;
 				$scope.searchActivity = new SearchActivity(user);
@@ -310,104 +309,147 @@ angular.module('weberApp')
 					var notific = new FriendsNotific(currentUser);
 					notific.then(function(data){
 
-						var currentuser = data
-						var k = null;
+							console.log('=======================CURRENT USER SEEN===========')
+							//console.log(currentUser.all_seen)
+							 accepted_peoples = [];
+							var currentuser = data
+							var k = null;
 
-						for (k in currentuser.notifications){
-
-							if(currentuser.notifications[k].seen == false){
-								requested_peoples.push(currentuser.notifications[k].friend_id)
-
+							for (k in currentuser.notifications){
+								if(currentuser.notifications[k].seen == false){
+									requested_peoples.push(currentuser.notifications[k].friend_id)
+								}
 							}
-						}
 
-						k= null;
-
-						for (k in currentuser.accept_notifications){
-
-							if(currentuser.accept_notifications[k].seen == false){
-								accepted_peoples.push(currentuser.accept_notifications[k].accepted_id)
-
+							k= null;
+							for (k in currentuser.accept_notifications){
+								if(currentuser.accept_notifications[k].seen == false){
+									accepted_peoples.push(currentuser.accept_notifications[k].accepted_id)
+								}
 							}
-						}
 
-						if(requested_peoples.length+accepted_peoples.length > 0){
-							$scope.newnotific = requested_peoples.length+accepted_peoples.length
+							console.log(accepted_peoples.length)
 
-						}else{
+							if(requested_peoples.length+accepted_peoples.length > 0){
 
-							$scope.newnotific = null;
-						}
+								if(!(currentUser.all_seen)){
+									$scope.newnotific = requested_peoples.length+accepted_peoples.length
+								}else{
+									$scope.newnotific = null;
+								}
 
+							}else{
+								$scope.newnotific = null;
+							}
 					});
 				}
 
-			function checkinrequests(id){
 
-				var k = null;
-				var returnvalue = false;
-				console.log(user)
-            		for (k in user.notifications){
-
-						if(user.notifications[k].friend_id == id){
-							returnvalue = true;
-						}
-					}
-
-				return returnvalue;
-
-			}
-
-			get_friend_notifications(user);
+				get_friend_notifications(user);
 
 				var source = new EventSource('/stream/'+user._id);
+
 				source.onmessage = function (event) {
 
 					data = JSON.parse(event.data)
-
 					if(parseInt(data.searchNotific)){
      					$scope.searchActivity = new SearchActivity(user);
      				}
 
      				if(parseInt(data.friendsnotifc)){
-						get_friend_notifications(user);
+     					$http.get('/api/me', {
+							headers: {
+								'Content-Type': 'application/json',
+								'Authorization': $auth.getToken()
+							}
+						}).success(function(user_id) {
+							Restangular.one('people',JSON.parse(user_id)).get({seed: Math.random()}).then(function(user) {
+									get_friend_notifications(user);
+							});
 
-     				}
-
+						});
+					}
 				};
 
   				$scope.getNewNotifcations = function(){
 
-					if(requested_peoples.length != 0){
-						var params = '{"_id": {"$in":["'+(requested_peoples).join('", "') + '"'+']}}'
-						Restangular.all('people').getList({
-							where : params,
-							seed: Math.random()
-						}).then(function(resposne){
-							$scope.requestedPeoples = resposne;
+
+
+					$scope.newnotific = null;
+
+  					console.log("=================requested peoples==========")
+  					console.log(requested_peoples)
+
+  					$http.get('/api/me', {
+						headers: {
+							'Content-Type': 'application/json',
+							'Authorization': $auth.getToken()
+						}
+					}).success(function(user_id) {
+
+						Restangular.one('people',JSON.parse(user_id)).get({seed: Math.random()}).then(function(user) {
+								var anotific = [];
+								var reqnotific = [];
+								console.log("=================user notifcatoins123=========")
+								console.log(user)
+
+								var k = null;
+
+								for(k in user.accept_notifications){
+									user.accept_notifications[k].seen = true
+									anotific.push(user.accept_notifications[k].accepted_id)
+								}
+
+								k = null;
+
+								for(k in user.notifications){
+									user.notifications[k].seen = true
+									reqnotific.push(user.notifications[k].friend_id)
+								}
+
+								user.patch(
+								{	'all_seen':true,
+									'accept_notifications':user.accept_notifications,
+									'notifications': user.notifications
+								}
+								).then(function(data){
+									console.log("all seen updated")
+									//console.log(data)
+								});
+
+
+
+									var params = '{"_id": {"$in":["'+(reqnotific).join('", "') + '"'+']}}'
+									Restangular.all('people').getList({
+										where : params,
+										seed: Math.random()
+									}).then(function(response){
+										console.log("------------")
+										$scope.rpeoples = response;
+										console.log(response)
+									});
+
+
+
+								console.log("===========accepted people===========")
+								console.log(accepted_peoples)
+
+
+									var params = '{"_id": {"$in":["'+(anotific).join('", "') + '"'+']}}'
+									Restangular.all('people').getList({
+										where : params,
+										seed: Math.random()
+									}).then(function(resposne){
+										$scope.apeoples = resposne;
+									});
+								
+
+							});
+
 						});
-					}else{
-						//$scope.requestedPeoples.push('no new requests found');
 
 					}
 
-
-					console.log("===========accepted people===========")
-					console.log(accepted_peoples)
-					if(accepted_peoples.length != 0){
-						var params = '{"_id": {"$in":["'+(accepted_peoples).join('", "') + '"'+']}}'
-						Restangular.all('people').getList({
-							where : params,
-							seed: Math.random()
-						}).then(function(resposne){
-							$scope.accepted_peoples = resposne;
-						});
-					}else{
-						//$scope.requestedPeoples.push('no new requests found');
-
-					}
-
-  				}
   				$scope.confirmrequest = function(id){
   					console.log("hai")
 

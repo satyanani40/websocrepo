@@ -201,6 +201,11 @@ people = {
             'type': 'string',
         },
 
+        'all_seen':{
+            'type':'boolean',
+            'default':False
+        },
+
         'notifications': {
             'type': 'list',
             'schema': {

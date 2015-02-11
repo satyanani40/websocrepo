@@ -60,17 +60,21 @@ angular.module('weberApp')
         }
 
         friendsActivity.prototype.AddFriend = function(){
+            var d = new Date();
 
-            var new_request = {'friend_id':this.currentuser._id,'seen':false}
+            var total_time = d.getDate()+d.getDay()+d.getFullYear()+d.getHours()+d.getMilliseconds()+d.getMinutes()+d.getMonth()+d.getSeconds()+d.getTime();
+            console.log("================total time===============")
+            console.log(total_time);
+            console.log(d)
+
+            var new_request = {'friend_id':this.currentuser._id,'seen':false,'timestamp':total_time,'daterequest':d}
 
             this.profileuser.notifications.push(new_request);
 
             var data = this.profileuser.patch({
                 'notifications':this.profileuser.notifications,
-                'notifications':{
-                        'all_seen':false
+                'all_seen':false
 
-                }
             });
             return data;
 
@@ -159,8 +163,9 @@ angular.module('weberApp')
                 this.profileuser.patch({
                    'friends': this.profileuser.friends
                 }).then(function(response){
-                    console.log("========profile userid =========")
-                    console.log(self.profileuser._id)
+
+                        console.log("========profile userid =========")
+                        console.log(self.profileuser._id)
 
                         console.log(self.profileuser.accept_notifications)
 
@@ -170,14 +175,15 @@ angular.module('weberApp')
                         self.profileuser.accept_notifications.push(new_request);
 
                         Restangular.one('people',self.profileuser._id).patch({
-                            'accept_notifications':self.profileuser.accept_notifications
+                            'accept_notifications':self.profileuser.accept_notifications,
+                            'all_seen':false
                         },{},{'If-Match':response._etag});
 
 
-                     k = null;
+                        k = null;
 
-                    console.log("added to profile user")
-                    console.log(response)
+                        console.log("added to profile user")
+                        console.log(response)
 
 
                 })
