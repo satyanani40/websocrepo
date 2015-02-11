@@ -32,93 +32,103 @@
 
                     <li><a href="#/weber_search">Match Me</a></li>
                     <li><a href="#/friends">Friends</a></li>
-                    <li class="dropdown">
+                    <li>
+                        <a ng-click="toggle = !toggle" style="cursor:pointer">
+                            <i class="glyphicon glyphicon-globe" style="font-size:17px;opacity:0.70;">
 
-                        <a id="dLabel" role="button"
-                           data-toggle="dropdown" class=""
-                           data-target="#" href="/page.html" style="padding-bottom: 12px;">
-                            <i class="glyphicon glyphicon-globe" style="font-size:18px;opacity:0.70"></i>
-                            <div class="label label-danger" style="padding: 1px 4px 2px 4px;position:absolute;color:#fff;top: 6px;left: 28px;font-size: 15px;font-weight: 600;">
-                                1
-                            </div>
+                            </i>
                         </a>
-                        <div class="dropdown-menu multi-level" role="menu" aria-labelledby="dropdownMenu" style="width:500px">
-                            <div class="jumbotron" style="background:#fff;padding:10px 10px 10px 10px;margin-bottom:0px">
-                                <div class="row">
+
+                        <div class="panel panel-default" ng-show="toggle"
+                             style="position:absolute;width:500px;right:0px;">
+                            <div class="panel-body" style="padding-top:2px">
+                                <div class="row"
+                                     style="border-bottom:1px solid #E7E5E5;">
                                     <div class="col-sm-12">
-                                        <div class="panel panel-body" style="padding:0px 0px 5px 0px">
-                                            <div class="col-sm-2">
-                                                <a href="#/profile/{{UserService.get(post.author)._id}}">
-                                                    <img src="http://api.randomuser.me/portraits/men/97.jpg"
-                                                         style="border-radius:2px;width:60px">
-                                                </a>
-                                            </div>
-                                            <div class="col-sm-7" style="padding-left:0px">
-
-                                                <h5>
-                                                    <a href="">
-                                                        Surya Chowdary Muppalla
-                                                    </a>
-                                                </h5>
-                                                <h6 style="opacity:0.65">
-                                                    Friends with
-                                                    <a href="" style="color:#444">
-                                                        <strong>
-                                                            Vegeshna Satya
-                                                        </strong>
-                                                    </a>
-                                                </h6>
-
-                                            </div>
-                                            <div class="col-sm-3">
-                                                <h6>
-                                                    <button class="btn btn-sm btn-default pull-right" style="">
-                                                        Confirm Friend
-                                                    </button>
-                                                </h6>
-                                            </div>
-                                        </div>
+                                        <h5>
+                                            Friends Requests
+                                        </h5>
                                     </div>
                                 </div>
-                                <div class="row">
-                                    <div class="col-sm-12">
-                                        <div class="panel panel-body" style="padding:0px 0px 5px 0px">
-                                            <div class="col-sm-2">
-                                                <a href="#/profile/{{UserService.get(post.author)._id}}">
-                                                    <img src="http://api.randomuser.me/portraits/women/5.jpg"
-                                                         style="border-radius:2px;width:60px">
+                                <div class="row" style="margin-top:7px">
+                                    <div class="col-sm-2">
+                                        <img src="http://api.randomuser.me/portraits/women/82.jpg"
+                                             style="width:65px">
+                                    </div>
+                                    <div class="col-sm-7">
+                                        <a href="">
+                                            <h5>
+                                                Surya Chowdary Muppalla
+                                            </h5>
+                                        </a>
+                                        <h6>
+                                            Friends with
+                                            <strong>
+                                                <a href="" style="color:#444">
+                                                    Vegeshna Satyanarayana
                                                 </a>
-                                            </div>
-                                            <div class="col-sm-7" style="padding-left:0px">
+                                            </strong>
+                                        </h6>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <button style="margin-top:10px"
+                                                class="btn btn-sm btn-default">
+                                            Confirm Friend
+                                        </button>
+                                    </div>
+                                </div>
+                                <div class="row" style="margin-top:7px">
+                                    <div class="col-sm-2">
+                                        <img src="http://api.randomuser.me/portraits/men/82.jpg"
+                                             style="width:65px">
+                                    </div>
+                                    <div class="col-sm-7">
+                                        <a href="">
+                                            <h5>
+                                                Vegeshna Satyanarayana Raju
+                                            </h5>
+                                        </a>
+                                        <h6>
+                                            Friends with
+                                            <strong>
+                                                <a href="" style="color:#444">
+                                                    Surya Chowdary Muppalla
+                                                </a>
+                                            </strong>
+                                        </h6>
+                                    </div>
+                                    <div class="col-sm-2">
+                                        <button style="margin-top:10px"
+                                                class="btn btn-sm btn-default">
+                                            Confirm Friend
+                                        </button>
+                                    </div>
+                                </div>
 
-                                                <h5>
-                                                    <a href="">
-                                                        Vegeshna Satyanarayana
-                                                    </a>
-                                                </h5>
-                                                <h6 style="opacity:0.65">
-                                                    Friends with
-                                                    <a href="" style="color:#444;opacity:0.90">
-                                                        <strong>
-                                                            Surya Chowdary Muppalla
-                                                        </strong>
-                                                    </a>
-                                                </h6>
-
-                                            </div>
-                                            <div class="col-sm-3">
-                                                <h6>
-                                                    <button class="btn btn-sm btn-default pull-right" style="">
-                                                        Confirm Friend
-                                                    </button>
-                                                </h6>
-                                            </div>
-                                        </div>
+                                <div class="row"
+                                     style="border-bottom:1px solid #E7E5E5;margin-top:10px">
+                                    <div class="col-sm-12">
+                                        <h5>
+                                            Notifications
+                                        </h5>
+                                    </div>
+                                </div>
+                                <div class="row" style="margin-top:7px">
+                                    <div class="col-sm-2">
+                                        <img src="http://api.randomuser.me/portraits/men/12.jpg"
+                                             style="width:65px">
+                                    </div>
+                                    <div class="col-sm-10">
+                                        <h5>
+                                            <a href="">
+                                                Surya chowdary Muppalla
+                                            </a>
+                                            Accepted your friend request
+                                        </h5>
                                     </div>
                                 </div>
                             </div>
                         </div>
-
                     </li>
                     <li>
                         <a href="" bs-dropdown="dropdown" style="padding-top: 11px; padding-bottom: 11px;">
