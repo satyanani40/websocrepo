@@ -10,7 +10,7 @@
 angular.module('weberApp')
 		.controller('WeberSearchCtrl', function($scope, $auth, Restangular,
 	 										InfinitePosts, $alert, $http,
-	 										CurrentUser, UserService,
+	 										CurrentUser, UserService,CurrentUser1,
 	 										SearchActivity, MatchMeResults) {
 		$scope.UserService = UserService;
 		//console.log($scope.UserService)
@@ -56,7 +56,7 @@ angular.module('weberApp')
 
 					$scope.matchmeresults = matchResults;
 
-       				if(CurrentUser.userId != 'undefined'){
+       				if(CurrentUser1.userId != 'undefined'){
 						$scope.searchActivity.addSearchText($scope.search,matchResults.total_matches,matchResults.matchedids,$scope.search.split(" "));
 					}
    			});

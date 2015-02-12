@@ -30,8 +30,25 @@ angular.module('weberApp')
 			this.users.push(promise);
 			return promise;
 		};
+	}).service('CurrentUser1', function($http, Restangular) {
+		this.userId = null;
+		this.reset = function() {
+			this.userId = null;
+		};
+		if (this.userId === null) {
+			$http.get('/api/me', {
+				headers: {
+					'Content-Type': 'application/json'
+				}
+			}).success(function(userId) {
+				this.userId = userId;
+				Restangular.one('people', userId).get().then(function(user) {
+					this.user = user;
+				}.bind(this));
+			}.bind(this));
+		}
 	})
-    .factory('CurrentUser', function($http,$auth,$q, Restangular) {
+	.factory('CurrentUser', function($http,$auth,$q, Restangular) {
 
             var CurrentUser = function() {
 
@@ -175,7 +192,7 @@ angular.module('weberApp')
 
     return SearchActivity;
 
-	}).factory('MatchMeResults', function($http, Restangular, $alert, $timeout,CurrentUser,$auth) {
+	}).factory('MatchMeResults', function($http, Restangular, $alert, $timeout,CurrentUser,$auth,CurrentUser1) {
 
 		var  MatchMeResults = function() {
 
@@ -194,7 +211,7 @@ angular.module('weberApp')
 
 			var params = '{"_id":"'+searchPostId+'"}';
 
-			var data = Restangular.one("people",JSON.parse(CurrentUser.userId)).all('searchActivity').getList({
+			var data = Restangular.one("people",JSON.parse(CurrentUser1.userId)).all('searchActivity').getList({
 				where :params,
 				sort: '[("_created",-1)]',
 				seed : Math.random()
