@@ -171,6 +171,49 @@ def after_friend_notification_get(updates, original):
 app.on_inserted_people_posts+= after_post_inserted
 app.on_updated_people+= after_friend_notification_get
 
+
+
+
+
+
+from werkzeug import secure_filename
+
+UPLOAD_FOLDER = 'static/images'
+ALLOWED_EXTENSIONS = set(['png','jpg'])
+
+
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+def allowed_file(filename):
+    return '.' in filename and \
+           filename.rsplit('.', 1)[1] in ALLOWED_EXTENSIONS
+
+
+
+@app.route('/fileUpload', methods=['GET', 'POST'])
+def fileupload():
+    if request.method == 'POST':
+        file = request.files['file']
+
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+
+            import datetime
+            dt = str(datetime.datetime.now())
+
+
+            import os
+            renamed_filename = filename+dt
+
+            print "==============================================="
+            print renamed_filename
+
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], renamed_filename))
+            print os.path.join(app.config['UPLOAD_FOLDER'], renamed_filename)
+        return os.path.join(app.config['UPLOAD_FOLDER'], renamed_filename)
+
+
+
 app.run(threaded= True, host='127.0.0.1',port=8000)
 
 

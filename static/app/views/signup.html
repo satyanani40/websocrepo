@@ -1,55 +1,103 @@
-<div class="container" style="width:400px;padding-top:150px">
-  <div class="row">
-    <div class="center-form panel">
-      <form method="post" ng-submit="signup()" name="signupForm">
-        <div class="panel-body">
-          <h2 class="text-center">Sign up</h2>
+<div class="container" style="margin-top:200px">
+    <div class="row">
+        <div class="col-md-5 col-md-offset-3">
+            <div class="panel panel-default">
+                <div class="panel-heading" style="padding-top:15px;padding-bottom:15px">
+                    <span class="glyphicon glyphicon-lock" style="opacity:0.70"></span>
+                    <strong>Weber</strong>
+                    Registration Form
+                </div>
+                <div class="panel-body">
+                    <form name="myForm" class="form-horizontal">
+                        <div class="form-group">
+                            <label  class="col-sm-3 control-label">
+                                Email
+                            </label>
+                            <div class="col-sm-9">
+                                <input type="email" class="form-control" id="email" name="email" ng-model="formData.email" required/>
+                                <span ng-show="myForm.email.$error.required && myForm.email.$dirty" style="color:red">
+                                    Email is required
+                                </span>
+                                <span ng-show="!myForm.email.$error.required && myForm.email.$error.email && myForm.email.$dirty"
+                                        style="color:red">
+                                    You entered an invalid email
+                                </span>
+                            </div>
+                        </div>
 
-          <div class="form-group"
-               ng-class="{ 'has-success' : signupForm.email.$valid && signupForm.email.$dirty, 'has-error' : signupForm.email.$invalid && signupForm.email.$dirty }">
-            <input class="form-control input-md" type="email" id="email"
-                   name="email" ng-model="email" placeholder="Email" required
-                   autofocus>
+                        <div class="form-group">
+                            <label for="email"  class="col-sm-3 control-label">
+                                Name
+                            </label>
+                            <div class="col-sm-9">
+                                <input class="form-control" type="text" id="name" name="name" ng-model="formData.name" required/>
+                                <span ng-show="myForm.name.$error.required && myForm.name.$dirty">required</span>
+                            </div>
+                        </div>
 
-            <div class="help-block text-danger" ng-if="signupForm.email.$dirty"
-                 ng-messages="signupForm.email.$error">
-              <div ng-message="required">Your email address is required.</div>
-              <div ng-message="email">Your email address is invalid.</div>
+                        <div class="form-group">
+                            <label for="username"  class="col-sm-3 control-label">
+                                Username
+                            </label>
+                            <div class="col-sm-9">
+                                <input class="form-control" type="text" id="username" name="username" ng-model="formData.username" ng-minlength="5" ng-maxlength="20" ng-pattern="/^[A-z][A-z0-9]*$/" required  />
+                                <span ng-show="myForm.username.$error.required && myForm.username.$dirty">required</span>
+                                <span ng-show="!myForm.username.$error.minLength && !myForm.username.$error.maxLength && myForm.username.$error.pattern && myForm.username.$dirty">Must start with a letter, and contain letters &amp; numbers only.</span>
+                                <span ng-show="!myForm.username.$error.required && (myForm.username.$error.minlength || myForm.username.$error.maxlength) && myForm.username.$dirty">Username ust be between 5 and 20 characters.</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password"  class="col-sm-3 control-label">
+                                Password
+                            </label>
+                            <div class="col-sm-9">
+                                <input class="form-control" type="password" id="password" name="password" ng-model="formData.password" ng-minlength="8" ng-maxlength="20" ng-pattern="/(?=.*[a-z])(?=.*[A-Z])(?=.*[^a-zA-Z])/" required  />
+                                <span ng-show="myForm.password.$error.required && myForm.password.$dirty">required</span>
+                                <span ng-show="!myForm.password.$error.required && (myForm.password.$error.minlength || myForm.password.$error.maxlength) && myForm.password.$dirty">Passwords must be between 8 and 20 characters.</span>
+                                <span ng-show="!myForm.password.$error.required && !myForm.password.$error.minlength && !myForm.password.$error.maxlength && myForm.password.$error.pattern && myForm.password.$dirty">Must contain one lower &amp; uppercase letter, and one non-alpha character (a number or a symbol.)</span>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="password_c"  class="col-sm-3 control-label">
+                                Confirm Password
+                            </label>
+                            <div class="col-sm-9">
+                                <input type="password" class="form-control" id="password_c" name="password_c" ng-model="formData.password_c" valid-password-c required  />
+                                <span ng-show="myForm.password_c.$error.required && myForm.password_c.$dirty">Please confirm your password.</span>
+                                <span ng-show="!myForm.password_c.$error.required && myForm.password_c.$error.noMatch && myForm.password.$dirty">Passwords do not match.</span>
+                            </div>
+                        </div>
+
+
+                        <div class="form-group">
+                            <div class="col-sm-3 col-sm-offset-3">
+                                <button type="submit" class="btn btn-success" ng-disabled="!myForm.$valid">Register with weber</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="panel-footer">
+                    Goto login?  <a href="#/login">Click here</a></div>
             </div>
-          </div>
-
-          <div class="form-group"
-               ng-class="{ 'has-success' : signupForm.password.$valid && signupForm.password.$dirty, 'has-error' : signupForm.password.$invalid && signupForm.password.$dirty }">
-            <input class="form-control input-md" type="password" name="password"
-                   ng-model="password" placeholder="Password" required>
-
-            <div class="help-block text-danger"
-                 ng-if="signupForm.password.$dirty"
-                 ng-messages="signupForm.password.$error">
-              <div ng-message="required">Password is required.</div>
-            </div>
-          </div>
-
-          <div class="form-group"
-               ng-class="{ 'has-success' : signupForm.confirmPassword.$valid && signupForm.confirmPassword.$dirty, 'has-error' : signupForm.confirmPassword.$invalid && signupForm.confirmPassword.$dirty }">
-            <input class="form-control input-md" type="password"
-                   name="confirmPassword" ng-model="confirmPassword"
-                   repeat-password="password" placeholder="Confirm Password"
-                   required>
-
-            <div class="help-block text-danger my-special-animation"
-                 ng-if="signupForm.confirmPassword.$dirty"
-                 ng-messages="signupForm.confirmPassword.$error">
-              <div ng-message="required">You must confirm password.</div>
-              <div ng-message="repeat">Passwords do not match.</div>
-            </div>
-          </div>
-
-          <button ng-click = "registerUser()" type="submit" ng-disabled="signupForm.$invalid"
-                  class="btn btn-md btn-block btn-primary">Create Account
-          </button>
         </div>
-      </form>
     </div>
-  </div>
 </div>
+
+
+<style>
+    body {
+  background: url(http://www.twitterevolutions.com/bgs/tree-on-a-moonlight-twitter-background.jpg) no-repeat center center fixed;
+  -webkit-background-size: cover;
+  -moz-background-size: cover;
+  -o-background-size: cover;
+  background-size: cover;
+}
+
+.panel-default {
+opacity: 0.9;
+margin-top:30px;
+}
+.form-group.last { margin-bottom:0px; }
+</style>

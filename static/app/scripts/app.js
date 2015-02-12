@@ -78,6 +78,10 @@ angular
 				templateUrl: '/static/app/views/userprofile.html',
 				controller: 'UserprofileCtrl',
 			})
+			.when('/forgotpassword', {
+				templateUrl: '/static/app/views/f_password.html'
+
+			})
 			.when('/weber_search', {
 				templateUrl: '/static/app/views/search.html',
 				controller: 'WeberSearchCtrl',

@@ -8,7 +8,7 @@
  * Controller of the weberApp
  */
 angular.module('weberApp')
-	.controller('SettingsCtrl', function($route, $scope, $auth, Restangular, InfinitePosts, $alert, $http, CurrentUser, UserService) {
+	.controller('SettingsCtrl', function($route, $scope, $auth, Restangular, InfinitePosts, $alert, $http, CurrentUser, UserService, fileUpload) {
 		$scope.UserService = UserService;
 		$http.get('/api/me', {
 			headers: {
@@ -25,6 +25,16 @@ angular.module('weberApp')
                 }).then(function(response){
                     $route.reload();
                 })
+			};
+
+
+			$scope.uploadFile = function(){
+				var file = $scope.myFile;
+				console.log('file is ' + JSON.stringify(file));
+				var uploadUrl = "/fileUpload";
+				fileUpload.uploadFileToUrl(file, uploadUrl,$scope.user);
+
+				$route.reload();
 			};
 
 			$scope.updateEmail = function() {
