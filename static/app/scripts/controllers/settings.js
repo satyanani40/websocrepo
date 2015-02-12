@@ -8,7 +8,7 @@
  * Controller of the weberApp
  */
 angular.module('weberApp')
-	.controller('SettingsCtrl', function($scope, $auth, Restangular, InfinitePosts, $alert, $http, CurrentUser, UserService) {
+	.controller('SettingsCtrl', function($route, $scope, $auth, Restangular, InfinitePosts, $alert, $http, CurrentUser, UserService) {
 		$scope.UserService = UserService;
 		$http.get('/api/me', {
 			headers: {
@@ -20,9 +20,28 @@ angular.module('weberApp')
               $scope.user = result;
             });
             $scope.updateUsername = function() {
+                $scope.user.patch({
+                    'username':$scope.u_username
+                }).then(function(response){
+                    $route.reload();
+                })
+			};
 
-                    passReq.username = $scope.updateUsername;
-                    passReq.put(); // confirmPassword and the params of the object will be sent
-				};
+			$scope.updateEmail = function() {
+                $scope.user.patch({
+                    'email':$scope.u_email
+                }).then(function(response){
+                    $route.reload();
+                })
+			};
+
+			$scope.updatePassword = function() {
+                $scope.user.patch({
+                    'password_test':$scope.u_password
+                }).then(function(response){
+                    $route.reload();
+                })
+			};
+
 		});
 	});
