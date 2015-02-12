@@ -1,5 +1,6 @@
 angular.module('weberApp')
-.factory('FriendsNotific', function($http, Restangular, $alert, $timeout) {
+
+.factory('FriendsNotific', function($http, Restangular) {
 
 		var FriendsNotific = function(user_obj) {
 
@@ -8,7 +9,5 @@ angular.module('weberApp')
 				seed: Math.random()
 			});
 		};
-
-
-		return FriendsNotific;
-})
+        return FriendsNotific;
+});

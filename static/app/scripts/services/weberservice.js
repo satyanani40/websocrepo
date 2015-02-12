@@ -285,7 +285,9 @@ angular.module('weberApp')
         restrict: 'A', //This menas that it will be used as an attribute and NOT as an element. I don't like creating custom HTML elements
         replace: true,
         templateUrl: "/static/app/views/navbar.html",
-        controller:function ($scope, $auth, CurrentUser, $alert, $location,$http,Restangular,SearchActivity,FriendsNotific,friendsActivity) {
+        controller:function ($scope, $auth, CurrentUser, $alert,
+                             $location,$http,Restangular,ChatActivity,
+                             SearchActivity,FriendsNotific,friendsActivity) {
 
 
  			$scope.dropdown = [{
@@ -317,6 +319,9 @@ angular.module('weberApp')
 				Restangular.one('people',JSON.parse(user_id)).get({seed: Math.random()}).then(function(user) {
 
 				$scope.currentUser = user;
+
+
+
 				$scope.searchActivity = new SearchActivity(user);
 				var requested_peoples = [];
 				var accepted_peoples = [];
@@ -326,9 +331,7 @@ angular.module('weberApp')
 					var notific = new FriendsNotific(currentUser);
 					notific.then(function(data){
 
-							console.log('=======================CURRENT USER SEEN===========')
-							//console.log(currentUser.all_seen)
-							 accepted_peoples = [];
+							accepted_peoples = [];
 							var currentuser = data
 							var k = null;
 
@@ -389,14 +392,7 @@ angular.module('weberApp')
 				};
 
   				$scope.getNewNotifcations = function(){
-
-
-
 					$scope.newnotific = null;
-
-  					console.log("=================requested peoples==========")
-  					console.log(requested_peoples)
-
   					$http.get('/api/me', {
 						headers: {
 							'Content-Type': 'application/json',
@@ -407,11 +403,7 @@ angular.module('weberApp')
 						Restangular.one('people',JSON.parse(user_id)).get({seed: Math.random()}).then(function(user) {
 								var anotific = [];
 								var reqnotific = [];
-								console.log("=================user notifcatoins123=========")
-								console.log(user)
-
 								var k = null;
-
 								for(k in user.accept_notifications){
 									user.accept_notifications[k].seen = true
 									anotific.push(user.accept_notifications[k].accepted_id)
@@ -430,27 +422,14 @@ angular.module('weberApp')
 									'notifications': user.notifications
 								}
 								).then(function(data){
-									console.log("all seen updated")
-									//console.log(data)
 								});
-
-
-
 									var params = '{"_id": {"$in":["'+(reqnotific).join('", "') + '"'+']}}'
 									Restangular.all('people').getList({
 										where : params,
 										seed: Math.random()
 									}).then(function(response){
-										console.log("------------")
 										$scope.rpeoples = response;
-										console.log(response)
 									});
-
-
-
-								console.log("===========accepted people===========")
-								console.log(accepted_peoples)
-
 
 									var params = '{"_id": {"$in":["'+(anotific).join('", "') + '"'+']}}'
 									Restangular.all('people').getList({
@@ -460,27 +439,17 @@ angular.module('weberApp')
 										$scope.apeoples = resposne;
 									});
 								
-
 							});
-
 						});
-
 					}
-
   				$scope.confirmrequest = function(id){
-  					console.log("hai")
-
-  					//var isInRequests = checkinrequests(id)
-
 					$http.get('/api/me', {
 						headers: {
 							'Content-Type': 'application/json',
 							'Authorization': $auth.getToken()
 						}
 					}).success(function(user_id) {
-
 						Restangular.one('people',JSON.parse(user_id)).get({seed: Math.random()}).then(function(user) {
-
 							var isInRequests = true;
 							if(isInRequests){
 								Restangular.one('people',id).get({seed: Math.random()}).then(function(profileuser){
@@ -490,29 +459,11 @@ angular.module('weberApp')
 
 								});
 							}
-							else{
-								console.log('not in notifications')
-							}
-
 						});
 					});
-
-
   				}
-
-
 			});
 		});
-
-
-
-
-			}
-    }
-});/*.factory("TokenRestangular", function (Restangular, StorageService) {
-   		 return Restangular.withConfig(function (RestangularConfigurer) {
-    		// Set access token in header.
-   			 RestangularConfigurer.setDefaultHeaders({Authorization:'Bearer '+ StorageService.get("access_token")});
-
-		});
-	});*/
+	}
+  }
+});

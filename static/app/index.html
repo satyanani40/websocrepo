@@ -27,96 +27,15 @@
     <![endif]-->
 	<div ng-show="overlay" id="screen-overlay"></div>
 
-
+    <div id="chat_divs"></div>
 
 	<!-- Add your site or application content here -->
 	<div class="container">
+    	<div ng-view=""></div>
+    </div>
 
+    <div chatbar></div>
 
-		<div ng-view=""></div>
-
-	</div>
-	<div class="container hidden">
-		<div class="row">
-			<div class="col-md-3 colpadding" style="position: fixed;bottom: 0px;right:0px" wb-affix="150">
-                <div class="panel panel-success" style="margin-bottom:0px;cursor:default;border:none;">
-                    <div class="panel-heading" style="border:none;">
-                        <h5 style="margin-top: 5px;margin-bottom: 5px;">
-                            <i class="glyphicon glyphicon-comment" style="top:4px"></i>&nbsp;
-                            Chat
-                            <a href="" class="pull-right" style="color:#888;"><h6>30 Online</h6></a>
-                        </h5>
-                    </div>
-                </div>
-                <div class="list-group" style="margin-bottom:0px">
-                    <a href="" class="list-group-item"
-                       style="border-top-left-radius: 0px;border-top-right-radius: 0px;">
-
-						<img style="width:30px" class=""
-                             src="http://api.randomuser.me/portraits/men/46.jpg" alt="">
-                        Vegeshna satyanarayana
-                    </a>
-                    <a href="" class="list-group-item"
-                       style="border-top-left-radius: 0px;border-top-right-radius: 0px;">
-                        <img style="width:30px" class=""
-                             src="http://api.randomuser.me/portraits/men/54.jpg" alt="">
-                       Dhulipeta Gabbar Singh
-                    </a>
-                    <a href="" class="list-group-item"
-                       style="border-top-left-radius: 0px;border-top-right-radius: 0px;">
-
-						<img style="width:30px" class=""
-                             src="http://api.randomuser.me/portraits/men/55.jpg" alt="">
-                        Vegeshna satyanarayana Raju
-                    </a>
-                    <a href="" class="list-group-item"
-                       style="border-top-left-radius: 0px;border-top-right-radius: 0px;">
-                        <img style="width:30px" class=""
-                             src="http://api.randomuser.me/portraits/men/56.jpg" alt="">
-                       Dhulipeta Gabbar Singh
-                    </a>
-                    <a href="" class="list-group-item"
-                       style="border-top-left-radius: 0px;border-top-right-radius: 0px;">
-
-						<img style="width:30px" class=""
-                             src="http://api.randomuser.me/portraits/men/57.jpg" alt="">
-                        Vegeshna satyanarayana Raju
-                    </a>
-                    <a href="" class="list-group-item"
-                       style="border-top-left-radius: 0px;border-top-right-radius: 0px;">
-                        <img style="width:30px" class=""
-                             src="http://api.randomuser.me/portraits/men/58.jpg" alt="">
-                       Dhulipeta Gabbar Singh
-                    </a>
-                    <a href="" class="list-group-item"
-                       style="border-top-left-radius: 0px;border-top-right-radius: 0px;">
-
-						<img style="width:30px" class=""
-                             src="http://api.randomuser.me/portraits/men/59.jpg" alt="">
-                        Vegeshna satyanarayana Raju
-                    </a>
-                    <a href="" class="list-group-item"
-                       style="border-top-left-radius: 0px;border-top-right-radius: 0px;">
-                        <img style="width:30px" class=""
-                             src="http://api.randomuser.me/portraits/men/60.jpg" alt="">
-                       Dhulipeta Gabbar Singh
-                    </a>
-                    <a class="list-group-item"
-                       style="border-top-left-radius: 0px;border-top-right-radius: 0px;">
-                        <div class="input-group">
-							<input id="btn-input" type="text" class="form-control input-sm"
-                                   placeholder="Search online friends..." />
-							<span class="input-group-btn">
-                                <button class="btn btn-default btn-sm" id="btn-chat">
-                                    <i class="glyphicon glyphicon-search"></i>
-                                </button>
-                            </span>
-                        </div>
-                    </a>
-                </div>
-            </div>
-		</div>
-	</div>
 
 
 	<!-- Google Analytics: change UA-XXXXX-X to be your site's ID -->
@@ -177,7 +96,9 @@
 	<script src="/static/app/scripts/services/weberservice.js"></script>
     <script src="/static/app/scripts/services/friendRequests.js"></script>
     <script src="/static/app/scripts/services/navbarservices.js"></script>
+    <script src="/static/app/scripts/services/ChatSerivce.js"></script>
     <script src="/static/app/scripts/directives/requestsdirectives.js"></script>
+    <script src="/static/app/scripts/controllers/chatcontroller.js"></script>
 	<script src="/static/app/scripts/controllers/userprofile.js"></script>
 	<script src="/static/app/scripts/controllers/instantsearch.js"></script>
 	<script src="/static/app/scripts/filters/searchfor.js"></script>

@@ -114,6 +114,47 @@ searchActivity_schema = {
 
     }
 
+
+message_schema = {
+
+        'sender': {
+            'type': 'objectid',
+            'data_relation': {
+                     'resource': 'people',
+                     'field': '_id',
+                     'embeddable': True
+            },
+        },
+
+        'receiver': {
+            'type': 'objectid',
+            'data_relation': {
+                     'resource': 'people',
+                     'field': '_id',
+                     'embeddable': True
+            },
+        },
+
+        'message': {
+            'type': 'string',
+        },
+
+        'seen':{
+            'type':'boolean',
+            'default':False
+        },
+        'messaged_on':{
+            'type':'datetime'
+        }
+
+    }
+
+messages = {
+    'item_title':'messages',
+    'schema':message_schema,
+    'item_lookup_field': 'receiver'
+}
+
 people = {
     # 'title' tag used in item links.
     'item_title': 'person',
@@ -293,5 +334,6 @@ DOMAIN = {
     'posts': posts,
     'searchActivity': searchActivity,
     'people_searchActivity':people_searchActivity,
-    'people_posts':people_posts
+    'people_posts':people_posts,
+    'messages':messages
    }
