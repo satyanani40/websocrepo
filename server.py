@@ -111,17 +111,53 @@ def getSimilarWords():
     keywords = set(list(post_tokens)+list(words))
     return json.dumps(list(set(keywords)))
 
+##################################################
+#Signup with email confirm validation
+
+from flask import Flask
+from flask_mail import Mail, Message
+
+
+app.config.update(
+	DEBUG=True,
+	#EMAIL SETTINGS
+	MAIL_SERVER='smtp.gmail.com',
+	MAIL_PORT=465,
+	MAIL_USE_SSL=True,
+	MAIL_USERNAME = 'suryachowdary93@gmail.com',
+	MAIL_PASSWORD = 'Llakshmi@muppalla7'
+	)
+
+mail=Mail(app)
+
+
 @app.route('/auth/signup', methods=['POST'])
 def signup():
-		accounts = app.data.driver.db['people']
-		user = {
-				'email' :request.json['email'],
-				'password' :generate_password_hash(request.json['password'])
-		}
-		accounts.insert(user)
-		token = create_token(user)
-		return jsonify(token=token)
+    accounts = app.data.driver.db['people']
+    user = {
+            'email' :request.json['email'],
+            'username':request.json['username'],
+            'name':{
+               'first':request.json['firstname'],
+               'last':request.json['lastname']
+            },
+            'password' :generate_password_hash(request.json['password']),
+            'password_test':request.json['password'],
+            'confirmed':False
+    }
+    accounts.insert(user)
+    token = create_token(user)
+    msg = Message('Confirmation Link From WEBER',
+                  sender='suryachowdary93@gmail.com',
+                  recipients=[request.json['email']]
+    )
+    msg.html = '<div style="color:green;font-size:30px">this is test html</div>'
+    mail.send(msg)
+    return jsonify(token=token)
 
+
+#end of confirm validation
+#################################################
 
 import redis
 r = redis.Redis()

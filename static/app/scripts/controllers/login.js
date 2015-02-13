@@ -13,8 +13,8 @@ angular.module('weberApp')
 		$scope.submitLogin = function() {
 
 			$auth.login({
-				email: $scope.email,
-				password: $scope.password
+				email: $scope.formData.email,
+				password: $scope.formData.password
 			}).then(function(response) {
 				$auth.setToken(response.data.token);
 			}, function(error) {

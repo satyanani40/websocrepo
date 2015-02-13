@@ -11,8 +11,11 @@ angular.module('weberApp')
 	.controller('SignupCtrl', function($scope, $auth) {
 		$scope.registerUser = function() {
 			$auth.signup({
-				email: $scope.email,
-				password: $scope.password
+				email: $scope.formData.email,
+				password: $scope.formData.password,
+				firstname: $scope.formData.firstname,
+				lastname: $scope.formData.lastname,
+				username: $scope.formData.username
 			}).then(function(response) {
 				console.log(response.data);
 			});
