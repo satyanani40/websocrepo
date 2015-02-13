@@ -60,7 +60,8 @@ angular.module('weberApp')
         restrict: 'A', //This menas that it will be used as an attribute and NOT as an element. I don't like creating custom HTML elements
         replace: true,
         templateUrl: "/static/app/views/chat.html",
-        controller:function ($scope, $auth, CurrentUser1,$http,Restangular,ChatActivity) {
+        controller:function ($scope, $auth, CurrentUser1,$http,$window,
+        $document, Restangular,ChatActivity) {
             $http.get('/api/me', {
                     headers: {
                         'Content-Type': 'application/json'
@@ -76,11 +77,80 @@ angular.module('weberApp')
                             $scope.chatusers = data;
                         });
 
-                        /*chatactivity.getChatFriends.then(function(response){
-                            $scope.chatusers = response;
-                            console.log("=======caht======")
-                            console.log($scope.chatusers)
-                        });*/
+                       $scope.send_message = function(receiverid){
+                           var text = document.getElementById('send_'+receiverid).value;
+                           document.getElementById('send_'+receiverid).value = null;
+                           var temp = chatactivity.sendMessage(receiverid,text);
+                           console.log(temp)
+                       }
+                        //========save open div=======
+
+                        var getValue = function(){
+                            return $window.sessionStorage.length;
+                        }
+
+                        var getData = function(){
+                          var json = [];
+                          $.each($window.sessionStorage, function(i, v){
+                            json.push(angular.fromJson(v));
+                          });
+                          return json;
+                        }
+
+                        //$scope.images = getData();
+                        //$scope.count = getValue();
+
+                        $scope.getSpecificDiv = function(id){
+                            var all_divs = getData();
+                            var required_div = {};
+                            for(div in all_divs){
+                                if(all_divs[div].id === 'chatdiv_'+id){
+                                    required_div = all_divs[div];
+                                }
+                            }
+                            return required_div;
+                        }
+
+                        $scope.newchatdiv = function(id){
+
+                            json = {
+                              id: 'chatdiv_'+id,
+                              minimize:false,
+                              maximize:true,
+                              right:0
+                            }
+
+                            $window.sessionStorage.setItem(id, JSON.stringify(json));
+                            //$scope.count = getValue();
+                            //$scope.images = getData();
+                            console.log(getData())
+                        }
+
+                        $scope.deletechatdiv = function(id){
+                          $window.sessionStorage.removeItem('chatdiv_'+id);
+                          //$scope.count = getValue();
+                          //$scope.images = getData();
+                          alert('Removed with Success!');
+                        }
+
+
+
+                        display_divs();
+                       //=========appending preivous divs
+                        function display_divs(){
+                           var previous_divs = getData();
+                           var count = 320;
+                           for(k in previous_divs){
+
+                                previous_divs[k].right = count;
+                                 count = count+300;
+
+                           }
+                           count = 300;
+                           $scope.previousdivs = previous_divs;
+                        }
+
+
                     });
             });
 
@@ -90,12 +160,14 @@ angular.module('weberApp')
 	return function(scope, element, attrs){
 
 		element.bind("click", function(){
-		     console.log(element[0].id)
-             angular.element(document.getElementById('chat_divs')).append($compile(
+		     scope.newchatdiv(element[0].id);
+		     scope.getSpecificDiv(element[0].id)
+             /*angular.element(document.getElementById('chat_divs')).append($compile(
                                     "<div id='chat_"+element[0].id+"'>"+
-                                        "<textarea id='text_"+element[0].id+"'></textarea><br/>"+
+                                        "<textarea ng-model='text_"+element[0].id+"'></textarea><br/>"+
                                         "<input type='text' id='send_"+element[0].id+"'>"+
-                                    "</div>")(scope));
+                                        '<input type="button" value="send" ng-click=send_message("'+element[0].id+'")>'+
+                                    "</div>")(scope));*/
 
 		});
 	};

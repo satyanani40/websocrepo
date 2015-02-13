@@ -1,3 +1,4 @@
+
 	<div class="container">
 
 		<div class="row">
@@ -38,5 +39,47 @@
                     </a>
                 </div>
             </div>
+
+            <div ng-repeat="previousdiv in previousdivs" class="col-md-3 colpadding"
+                 style="margin-left:10px;position: fixed;bottom: 0px;right:{{ previousdiv.right}}px" wb-affix="150">
+                <div class="panel panel-success" style="margin-bottom:0px;cursor:default;border:none;">
+                    <div class="panel-heading" style="border:none;">
+                        <h5 style="margin-top: 5px;margin-bottom: 5px;">
+                            <i class="glyphicon glyphicon-comment" style="top:4px"></i>&nbsp;
+                            Chat
+                            <a href="" class="pull-right" style="color:#888;"><h6>30 Online</h6></a>
+                        </h5>
+                    </div>
+                </div>
+
+                <div class="list-group" style="margin-bottom:0px" >
+
+                    <a  class="list-group-item" ng-repeat="chatuser in chatusers"
+                       style="border-top-left-radius: 0px;border-top-right-radius: 0px;"
+                       id="{{chatuser._id}}" addchatdiv>
+
+
+                            <img style="width:30px" class=""
+                                 src="{{ chatuser.picture.thumbnail}}" alt="">
+                                    {{ chatuser.name.first }}
+
+                    </a>
+                    <a class="list-group-item"
+                       style="border-top-left-radius: 0px;border-top-right-radius: 0px;">
+                        <div class="input-group">
+							<input id="btn-input" type="text" class="form-control input-sm"
+                                   placeholder="Search online friends..." />
+							<span class="input-group-btn">
+                                <button class="btn btn-default btn-sm" id="btn-chat">
+                                    <i class="glyphicon glyphicon-search"></i>
+                                </button>
+                            </span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+
+
+
 		</div>
 	</div>

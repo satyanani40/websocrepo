@@ -77,6 +77,13 @@ angular
 			.when('/profile/:username', {
 				templateUrl: '/static/app/views/userprofile.html',
 				controller: 'UserprofileCtrl',
+				resolve: {
+					authenticated: function($location, $auth) {
+						if (!$auth.isAuthenticated()) {
+							return $location.path('/login');
+						}
+					}
+				}
 			})
 			.when('/weber_search', {
 				templateUrl: '/static/app/views/search.html',
