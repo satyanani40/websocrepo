@@ -38,5 +38,8 @@ angular.module('weberApp')
             });
         }
 
+
+
+
     return ChatActivity;
     });

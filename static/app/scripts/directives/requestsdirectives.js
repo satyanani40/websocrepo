@@ -73,7 +73,6 @@ angular.module('weberApp')
                         var chatactivity = new ChatActivity(user);
 
                         chatactivity.getChatFriends().then(function(data){
-                            console.log(data)
                             $scope.chatusers = data;
                         });
 
@@ -81,7 +80,7 @@ angular.module('weberApp')
                            var text = document.getElementById('send_'+receiverid).value;
                            document.getElementById('send_'+receiverid).value = null;
                            var temp = chatactivity.sendMessage(receiverid,text);
-                           console.log(temp)
+
                        }
                         //========save open div=======
 
@@ -97,60 +96,62 @@ angular.module('weberApp')
                           return json;
                         }
 
-                        //$scope.images = getData();
-                        //$scope.count = getValue();
+                        function display_divs(){
+                           console.log('======calling display divs========')
+                           previous_divs1 = getData();
+                           var count = 490;
 
-                        $scope.getSpecificDiv = function(id){
-                            var all_divs = getData();
-                            var required_div = {};
-                            for(div in all_divs){
-                                if(all_divs[div].id === 'chatdiv_'+id){
-                                    required_div = all_divs[div];
-                                }
-                            }
-                            return required_div;
+                           for(k in previous_divs1){
+                                previous_divs1[k].right = count;
+                                count = count+300;
+                           }
+
+                           $scope.previousdivs = previous_divs1;
+                           $scope.previousdivs;
+
                         }
 
-                        $scope.newchatdiv = function(id){
+
+                        $scope.newchatdiv = function(id, name, height,minimize,maximize){
+
+                            height = typeof height !== 'undefined' ? height : 'auto';
+                            minimize = typeof minimize !== 'undefined' ? minimize : false;
+                            maximize = typeof maximize !== 'undefined' ? maximize : true;
+
+                            console.log(id+height+minimize+maximize)
 
                             json = {
-                              id: 'chatdiv_'+id,
-                              minimize:false,
-                              maximize:true,
-                              right:0
+                              name:name,
+                              id: id,
+                              minimize:minimize,
+                              maximize:maximize,
+                              right:0,
+                              height:height
                             }
 
                             $window.sessionStorage.setItem(id, JSON.stringify(json));
-                            //$scope.count = getValue();
-                            //$scope.images = getData();
-                            console.log(getData())
+                            display_divs();
                         }
 
-                        $scope.deletechatdiv = function(id){
-                          $window.sessionStorage.removeItem('chatdiv_'+id);
-                          //$scope.count = getValue();
-                          //$scope.images = getData();
-                          alert('Removed with Success!');
+                        $scope.close_div = function(id){
+                          console.log(id)
+                          //$window.sessionStorage.clear();
+                          $window.sessionStorage.removeItem(id);
+                          display_divs();
                         }
 
-
-
-                        display_divs();
-                       //=========appending preivous divs
-                        function display_divs(){
-                           var previous_divs = getData();
-                           var count = 320;
-                           for(k in previous_divs){
-
-                                previous_divs[k].right = count;
-                                 count = count+300;
-
-                           }
-                           count = 300;
-                           $scope.previousdivs = previous_divs;
+                        $scope.minimize = function(id){
+                            var name = JSON.parse($window.sessionStorage.getItem(id)).name
+                            $window.sessionStorage.removeItem(id);
+                            $scope.newchatdiv(id, name,'92px',true,false);
+                        }
+                        $scope.maximize = function(id){
+                            var name = JSON.parse($window.sessionStorage.getItem(id)).name
+                            $window.sessionStorage.removeItem(id);
+                            $scope.newchatdiv(id, name, 'auto ',false,true);
                         }
 
-
+                            display_divs();
                     });
             });
 
@@ -160,14 +161,9 @@ angular.module('weberApp')
 	return function(scope, element, attrs){
 
 		element.bind("click", function(){
-		     scope.newchatdiv(element[0].id);
-		     scope.getSpecificDiv(element[0].id)
-             /*angular.element(document.getElementById('chat_divs')).append($compile(
-                                    "<div id='chat_"+element[0].id+"'>"+
-                                        "<textarea ng-model='text_"+element[0].id+"'></textarea><br/>"+
-                                        "<input type='text' id='send_"+element[0].id+"'>"+
-                                        '<input type="button" value="send" ng-click=send_message("'+element[0].id+'")>'+
-                                    "</div>")(scope));*/
+		     console.log(element[0].name)
+		     scope.newchatdiv(element[0].id, element[0].name);
+             scope.$apply()
 
 		});
 	};
